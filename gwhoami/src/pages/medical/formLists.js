@@ -35,7 +35,6 @@ export const formList = {
     immune: {
         saved: false,
         isSubmit: true,
-        immuneName:'',
         hospitalName: '',
         from:'',
         country: '',
@@ -49,6 +48,7 @@ export const formList = {
         immuneComments: '',
         documents: [],
     },
+    doseName:['first','second'],
     immuneType: ['Flu','Covid'],
     optDose:['Yes', 'No'],
     secondDose:['Yes', 'No'],
