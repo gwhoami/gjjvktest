@@ -3,8 +3,6 @@ export const formList = {
         saved: false,
         isSubmit: true,
         idNumber: '',
-        age: ',',
-        test:'',
         specialVisit: '',
         primaryCare:'',
         insuranceType: '',
