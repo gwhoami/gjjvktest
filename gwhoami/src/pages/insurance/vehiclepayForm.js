@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFileAlt, faFileExcel, faFileImage, faFilePdf, faFilePowerpoint, faFileWord, faSave, faSearch, faTrashAlt, faUpload } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../../toast";
-import { ButtonLoader} from "../../component/forms";
+import { ButtonLoader } from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
@@ -10,7 +10,8 @@ import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 
 
-const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, vehiclesAddedList }) => {
+const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, vehiclesAddedList }) =>
+{
     const formRef = useRef(form);
     const currentDom = useRef();
     // const { scrollRef } = useContext(UserContext);
@@ -27,13 +28,15 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
     const progress_ref = useRef();
     const file_ref = useRef();
     const progress = useRef({ value: 0 });
-    const progressHandler = (event) => {
+    const progressHandler = (event) =>
+    {
         let percent = (event.loaded / event.total) * 100;
         progress.current.value = Math.round(percent);
         subRefresh(Date.now());
     }
 
-    const completeHandler = (event) => {
+    const completeHandler = (event) =>
+    {
         vehiclesAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
@@ -41,7 +44,8 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
     }
     const errorHandler = (event) => { }
     const abortHandler = (event) => { }
-    const fileChange = (evt) => {
+    const fileChange = (evt) =>
+    {
         let file = evt.currentTarget.files[0];
         if (typeof file === 'undefined') return;
         pageRef.current.selFileName = file.name;
@@ -49,9 +53,11 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    
-    const saveVehicles = () => {
-        if (currentDom.current.querySelector('.err-input')) {
+
+    const saveVehicles = () =>
+    {
+        if (currentDom.current.querySelector('.err-input'))
+        {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
         }
@@ -63,12 +69,15 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
         delete arr['isSubmit'];
         let params = isNew ? [{ _modal: 'ProfileList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'vehicles': arr } } }] :
             [{ _modal: 'ProfileList', _condition: 'update', _find: { _id: pageData.current._id, 'vehicles.id': arr.id }, _data: { $set: { "vehicles.$": arr } }, _options: { upsert: false } }];
-        (async () => {
+        (async () =>
+        {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-            if (res.isError) {
+            if (res.isError)
+            {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
-            } else {
+            } else
+            {
                 arr.isSubmit = true;
                 let newlist = [...vehiclesAddedList.current];
                 newlist[recordIndex] = arr;
@@ -80,8 +89,10 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
             }
         })();
     }
-    const openFileUpload = () => {
-        if (typeof formRef.current.saved !== 'undefined') {
+    const openFileUpload = () =>
+    {
+        if (typeof formRef.current.saved !== 'undefined')
+        {
             ToastMessage({ type: 'error', message: 'Save the vehicles Insurance and upload!', timeout: 1200 });
             return;
         }
@@ -89,7 +100,8 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
         subRefresh(Date.now());
     }
     const modalRef = useRef();
-    const modalClose = useCallback((name, idx) => {
+    const modalClose = useCallback((name, idx) =>
+    {
         pageRef.current.title = '';
         pageRef.current.selFileName = '';
         pageRef.current.showProgress = false;
@@ -98,11 +110,14 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
         pageRef.current.showProgressModal = !pageRef.current.showProgressModal; subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const modalSave = useCallback(() => {
-        if (!pageRef.current.title) {
+    const modalSave = useCallback(() =>
+    {
+        if (!pageRef.current.title)
+        {
             ToastMessage({ type: 'error', message: 'Please enter title', timeout: 1000 });
             return;
-        } else if (file_ref.current.files.length === 0) {
+        } else if (file_ref.current.files.length === 0)
+        {
             ToastMessage({ type: 'error', message: 'Please select document to upload', timeout: 1000 });
             return;
         }
@@ -118,7 +133,8 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
         formdata.append("_id", pageData.current._id);
         formdata.append("recindex", recordIndex);
         //subRefresh(Date.now());
-        (async () => {
+        (async () =>
+        {
             var ajax = new XMLHttpRequest();
             ajax.upload.addEventListener("progress", progressHandler, false);
             ajax.addEventListener("load", completeHandler, false);
@@ -129,15 +145,18 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
         })();
         // eslint-disable-next-line
     }, []);
-    const openfilePicker = () => {
+    const openfilePicker = () =>
+    {
         file_ref.current.click()
     }
-    const modalViewClose = useCallback(() => {
+    const modalViewClose = useCallback(() =>
+    {
         pageRef.current.showUploadWin = !pageRef.current.showUploadWin;
         subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const getFileIcon = (ext) => {
+    const getFileIcon = (ext) =>
+    {
         return ext === '.pdf' ? faFilePdf :
             ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.bmp' || ext === 'gif' ? faFileImage :
                 ext === '.doc' || ext === '.docx' ? faFileWord :
@@ -145,26 +164,34 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                         ext === '.ppt' || ext === '.pptx' ? faFilePowerpoint :
                             faFile;
     }
-    const downloadFile = (itm) => {
+    const downloadFile = (itm) =>
+    {
         window.location.href = `${process.env.REACT_APP_API_URL}/api/client/download_document?oriname=${itm.oriname}&filename=${itm.filename}&dt=${Date.now()}`
     }
-    const removeFile = (itm, idx) => {
-        alertRef.current.showConfirm((res) => {
+    const removeFile = (itm, idx) =>
+    {
+        alertRef.current.showConfirm((res) =>
+        {
             if (res === 'no') return;
             vehiclesAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeVehicles = () => {
-        if (vehiclesAddedList.current[recordIndex].saved === false) {
-            alertRef.current.showConfirm((res) => {
+    const removeVehicles = () =>
+    {
+        if (vehiclesAddedList.current[recordIndex].saved === false)
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 vehiclesAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Insurance?');
-        } else {
-            alertRef.current.showConfirm((res) => {
+        } else
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 let params = [{ _modal: 'ProfileList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'insurance': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
@@ -240,11 +267,11 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                     onClick={removeVehicles}
                 ></i>
                 <div className="pt-5 pb-3">
-                    
+
                     <form>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Insurance Company</label>
+                                <label>Insurance Company</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.vehiclesCompany ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.vehiclesCompany} onChange={e => { formRef.current.vehiclesCompany = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
@@ -252,7 +279,7 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Insurance Name</label>
+                                <label>Insurance Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.insuranceName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.insuranceName} onChange={e => { formRef.current.insuranceName = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
@@ -260,7 +287,7 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Policy Number</label>
+                                <label>Policy Number</label>
                                 <input
                                     type="text"
                                     value={formRef.current.policyNumber}
@@ -271,7 +298,7 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                         </div>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Policy Period</label>
+                                <label>Policy Period</label>
                                 <input
                                     type="text"
                                     value={formRef.current.policyPeriod}
@@ -280,7 +307,7 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                 />
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Policy Address</label>
+                                <label>Policy Address</label>
                                 <input
                                     type="text"
                                     value={formRef.current.policyAddress}
@@ -289,8 +316,8 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                 />
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Total Premium</label>
-                            <input
+                                <label>Total Premium</label>
+                                <input
                                     type="text"
                                     value={formRef.current.totalPremium}
                                     className={`w-full rounded border ${!formRef.current.totalPremium ? 'border-red-500 err-input' : 'border-gray-400'}`}
@@ -298,115 +325,133 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                 />
                             </div>
                         </div>
-                        
+
                         <div className="flex w-full justify-start items-center pt-3 relative">
                             <div className="w-4/6 mr-5">
-                            <table>
-                            <thead>
-                               <th className="bg-white-100 border border-gray-400 w-10 text-center">Coverage</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="bg-blue-100 border border-gray-400 w-100">
-                                    <input
-                                        type="text"
-                                        placeholder="Dwelling $"
-                                        value={formRef.current.dwelling}
-                                        className={`w-full rounded border ${!formRef.current.dwelling ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.dwelling = e.currentTarget.value; subRefresh(Date.now()); }}
-                                        />
-                                    </td>
-                                    <td className="bg-blue-100 border border-gray-400 w-100 text-center">
-                                    <input
-                                        type="text"
-                                        placeholder="Loss Of Year $"
-                                        value={formRef.current.loYear}
-                                        className={`w-full rounded border ${!formRef.current.loYear ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.loYear = e.currentTarget.value; subRefresh(Date.now()); }}
-                                    />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="bg-blue-100 border border-gray-400 w-100">
-                                     <input
-                                        type="text"
-                                        placeholder="Other Structure"
-                                        value={formRef.current.otherStructure}
-                                        className={`w-full rounded border ${!formRef.current.otherStructure ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.otherStructure = e.currentTarget.value; subRefresh(Date.now()); }}
-                                      />
-                                    </td>
-                                    <td className="bg-blue-100 border border-gray-400 w-100 text-center">
-                                     <input
-                                        type="text"
-                                        placeholder="Personal Liability"
-                                        value={formRef.current.personalLiability}
-                                        className={`w-full rounded border ${!formRef.current.personalLiability ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.personalLiability = e.currentTarget.value; subRefresh(Date.now()); }}
-                                     />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="bg-blue-100 border border-gray-400 w-100">
-                                     <input
-                                        type="text"
-                                        placeholder="Personal Properties"
-                                        value={formRef.current.personalProperties}
-                                        className={`w-full rounded border ${!formRef.current.personalProperties ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.personalProperties = e.currentTarget.value; subRefresh(Date.now()); }}
-                                      />
-                                    </td>
-                                    <td className="bg-blue-100 border border-gray-400 w-100 text-center">
-                                    <input
-                                        type="text"
-                                        placeholder="Mid Pay $"
-                                        value={formRef.current.midPay}
-                                        className={`w-full rounded border ${!formRef.current.midPay ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.midPay = e.currentTarget.value; subRefresh(Date.now()); }}
-                                   />
-                                    </td>
-                                </tr>
-                            </tbody>
-                            </table>
+                                <div class="flex ...">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="w-full">
+                                                        <table className="bg-blue-100 border border-gray-400 w-full text-center">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Coverage</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="w-full">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-100">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Dwelling $"
+                                                                            value={formRef.current.dwelling}
+                                                                            className={`w-full rounded border ${!formRef.current.dwelling ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.dwelling = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        /></td>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-100 text-center">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Loss Of Year $"
+                                                                            value={formRef.current.loYear}
+                                                                            className={`w-full rounded border ${!formRef.current.loYear ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.loYear = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        /></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-100">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Other Structure"
+                                                                            value={formRef.current.otherStructure}
+                                                                            className={`w-full rounded border ${!formRef.current.otherStructure ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.otherStructure = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        /></td>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-100 text-center">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Personal Liability"
+                                                                            value={formRef.current.personalLiability}
+                                                                            className={`w-full rounded border ${!formRef.current.personalLiability ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.personalLiability = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-100">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Personal Properties"
+                                                                            value={formRef.current.personalProperties}
+                                                                            className={`w-full rounded border ${!formRef.current.personalProperties ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.personalProperties = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        />
+                                                                    </td>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-100 text-center">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Mid Pay $"
+                                                                            value={formRef.current.midPay}
+                                                                            className={`w-full rounded border ${!formRef.current.midPay ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.midPay = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
                             </div>
                             <div className="w-2/6 mr-5">
-                            <table>
-                            <thead>
-                                <th className="bg-white-100 border border-gray-400 w-10 px-3 py-1 text-center">Dedectibles</th>
-                            </thead>
-                            <tbody>
-                            
-                                <tr>
-                                    <td className="bg-blue-100 border border-gray-400 w-96 ">
-                                    <input
-                                        type="text"
-                                        placeholder="Mid Pay $"
-                                        value={formRef.current.midPay}
-                                        className={`w-full rounded border ${!formRef.current.midPay ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.midPay = e.currentTarget.value; subRefresh(Date.now()); }}
-                                    />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="bg-blue-100 border border-gray-400 w-96 text-center">
-                                    <input
-                                        type="text"
-                                        placeholder="All Other Peris $"
-                                        value={formRef.current.otherPeris}
-                                        className={`w-full rounded border ${!formRef.current.otherPeris ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                        onChange={e => { formRef.current.otherPeris = e.currentTarget.value; subRefresh(Date.now()); }}
-                                     />
-                                    </td>
-                                </tr>
-                            </tbody>
-                            </table>
+                                <table>
+                                    <thead>
+                                        <th className="bg-white-100 border border-gray-400 w-10 px-3 py-1 text-center">Dedectibles</th>
+                                    </thead>
+                                    <tbody>
+
+                                        <tr>
+                                            <td className="bg-blue-100 border border-gray-400 w-96 ">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Mid Pay $"
+                                                    value={formRef.current.midPay}
+                                                    className={`w-full rounded border ${!formRef.current.midPay ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                    onChange={e => { formRef.current.midPay = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td className="bg-blue-100 border border-gray-400 w-96 text-center">
+                                                <input
+                                                    type="text"
+                                                    placeholder="All Other Peris $"
+                                                    value={formRef.current.otherPeris}
+                                                    className={`w-full rounded border ${!formRef.current.otherPeris ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                    onChange={e => { formRef.current.otherPeris = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
 
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Endoresements/Additional Coverage $</label>
+                                <label>Endoresements/Additional Coverage $</label>
                                 <input
                                     type="text"
                                     value={formRef.current.additionalCoverage}
@@ -415,7 +460,7 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                 />
                             </div>
                             <div className="w-1/3 mr-5">
-                            
+
                             </div>
                         </div>
 
@@ -460,7 +505,7 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                         </div>
                     </form>
                 </div>
-            </div>
+            </div >
         </>
     );
 });
