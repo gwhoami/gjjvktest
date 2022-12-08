@@ -327,8 +327,9 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                         </div>
 
                         <div className="flex w-full justify-start items-center pt-3 relative">
-                            <div className="w-4/6 mr-5">
-                                <div class="flex ...">
+
+                            <div class="flex ...">
+                                <div class="w-2/3 ... ">
                                     <table>
                                         <tbody>
                                             <tr>
@@ -410,43 +411,58 @@ const VehiclespayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recor
                                         </tbody>
                                     </table>
                                 </div>
+                                &nbsp;&nbsp;
+                                <div class="w-1/3 ... ">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="w-full">
+                                                        <table className="bg-blue-100 border border-gray-400 w-full text-center">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Dedectibles</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
 
-
-
-                            </div>
-                            <div className="w-2/6 mr-5">
-                                <table>
-                                    <thead>
-                                        <th className="bg-white-100 border border-gray-400 w-10 px-3 py-1 text-center">Dedectibles</th>
-                                    </thead>
-                                    <tbody>
-
-                                        <tr>
-                                            <td className="bg-blue-100 border border-gray-400 w-96 ">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Mid Pay $"
-                                                    value={formRef.current.midPay}
-                                                    className={`w-full rounded border ${!formRef.current.midPay ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                                    onChange={e => { formRef.current.midPay = e.currentTarget.value; subRefresh(Date.now()); }}
-                                                />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td className="bg-blue-100 border border-gray-400 w-96 text-center">
-                                                <input
-                                                    type="text"
-                                                    placeholder="All Other Peris $"
-                                                    value={formRef.current.otherPeris}
-                                                    className={`w-full rounded border ${!formRef.current.otherPeris ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                                    onChange={e => { formRef.current.otherPeris = e.currentTarget.value; subRefresh(Date.now()); }}
-                                                />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                    <div class="w-full">
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-96 ">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Mid Pay $"
+                                                                            value={formRef.current.midPay}
+                                                                            className={`w-full rounded border ${!formRef.current.midPay ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.midPay = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td className="bg-blue-100 border border-gray-400 w-96 text-center">
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="All Other Peris $"
+                                                                            value={formRef.current.otherPeris}
+                                                                            className={`w-full rounded border ${!formRef.current.otherPeris ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                                            onChange={e => { formRef.current.otherPeris = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
+
 
 
                         <div className="flex w-full justify-start items-center relative">
