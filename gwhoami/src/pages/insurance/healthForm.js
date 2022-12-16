@@ -12,7 +12,8 @@ import { formList } from "./formLists";
 import { InputRadio } from "../../component/forms";
 // import { UserContext } from "../../util/maincontext";
 
-const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, hinsuranceAddedList }) => {
+const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, hinsuranceAddedList }) =>
+{
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -31,13 +32,15 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
     const progress_ref = useRef();
     const file_ref = useRef();
     const progress = useRef({ value: 0 });
-    const progressHandler = (event) => {
+    const progressHandler = (event) =>
+    {
         let percent = (event.loaded / event.total) * 100;
         progress.current.value = Math.round(percent);
         subRefresh(Date.now());
     }
 
-    const completeHandler = (event) => {
+    const completeHandler = (event) =>
+    {
         hinsuranceAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
@@ -45,7 +48,8 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
     }
     const errorHandler = (event) => { }
     const abortHandler = (event) => { }
-    const fileChange = (evt) => {
+    const fileChange = (evt) =>
+    {
         let file = evt.currentTarget.files[0];
         if (typeof file === 'undefined') return;
         pageRef.current.selFileName = file.name;
@@ -57,8 +61,10 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveHinsurance = () => {
-        if (currentDom.current.querySelector('.err-input')) {
+    const saveHinsurance = () =>
+    {
+        if (currentDom.current.querySelector('.err-input'))
+        {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
         }
@@ -70,12 +76,15 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         delete arr['isSubmit'];
         let params = isNew ? [{ _modal: 'InsuranceList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'hinsurance': arr } } }] :
             [{ _modal: 'InsuranceList', _condition: 'update', _find: { _id: pageData.current._id, 'hinsurance.id': arr.id }, _data: { $set: { "hinsurance.$": arr } }, _options: { upsert: false } }];
-        (async () => {
+        (async () =>
+        {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-            if (res.isError) {
+            if (res.isError)
+            {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
-            } else {
+            } else
+            {
                 arr.isSubmit = true;
                 let newlist = [...hinsuranceAddedList.current];
                 newlist[recordIndex] = arr;
@@ -87,8 +96,10 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
             }
         })();
     }
-    const openFileUpload = () => {
-        if (typeof formRef.current.saved !== 'undefined') {
+    const openFileUpload = () =>
+    {
+        if (typeof formRef.current.saved !== 'undefined')
+        {
             ToastMessage({ type: 'error', message: 'Save the Health Insurance and upload!', timeout: 1200 });
             return;
         }
@@ -96,7 +107,8 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         subRefresh(Date.now());
     }
     const modalRef = useRef();
-    const modalClose = useCallback((name, idx) => {
+    const modalClose = useCallback((name, idx) =>
+    {
         pageRef.current.title = '';
         pageRef.current.selFileName = '';
         pageRef.current.showProgress = false;
@@ -105,11 +117,14 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         pageRef.current.showProgressModal = !pageRef.current.showProgressModal; subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const modalSave = useCallback(() => {
-        if (!pageRef.current.title) {
+    const modalSave = useCallback(() =>
+    {
+        if (!pageRef.current.title)
+        {
             ToastMessage({ type: 'error', message: 'Please enter title', timeout: 1000 });
             return;
-        } else if (file_ref.current.files.length === 0) {
+        } else if (file_ref.current.files.length === 0)
+        {
             ToastMessage({ type: 'error', message: 'Please select document to upload', timeout: 1000 });
             return;
         }
@@ -125,7 +140,8 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         formdata.append("_id", pageData.current._id);
         formdata.append("recindex", recordIndex);
         //subRefresh(Date.now());
-        (async () => {
+        (async () =>
+        {
             var ajax = new XMLHttpRequest();
             ajax.upload.addEventListener("progress", progressHandler, false);
             ajax.addEventListener("load", completeHandler, false);
@@ -136,15 +152,18 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         })();
         // eslint-disable-next-line
     }, []);
-    const openfilePicker = () => {
+    const openfilePicker = () =>
+    {
         file_ref.current.click()
     }
-    const modalViewClose = useCallback(() => {
+    const modalViewClose = useCallback(() =>
+    {
         pageRef.current.showUploadWin = !pageRef.current.showUploadWin;
         subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const getFileIcon = (ext) => {
+    const getFileIcon = (ext) =>
+    {
         return ext === '.pdf' ? faFilePdf :
             ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.bmp' || ext === 'gif' ? faFileImage :
                 ext === '.doc' || ext === '.docx' ? faFileWord :
@@ -152,26 +171,34 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                         ext === '.ppt' || ext === '.pptx' ? faFilePowerpoint :
                             faFile;
     }
-    const downloadFile = (itm) => {
+    const downloadFile = (itm) =>
+    {
         window.location.href = `${process.env.REACT_APP_API_URL}/api/client/download_document?oriname=${itm.oriname}&filename=${itm.filename}&dt=${Date.now()}`
     }
-    const removeFile = (itm, idx) => {
-        alertRef.current.showConfirm((res) => {
+    const removeFile = (itm, idx) =>
+    {
+        alertRef.current.showConfirm((res) =>
+        {
             if (res === 'no') return;
             hinsuranceAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeHinsurance = () => {
-        if (hinsuranceAddedList.current[recordIndex].saved === false) {
-            alertRef.current.showConfirm((res) => {
+    const removeHinsurance = () =>
+    {
+        if (hinsuranceAddedList.current[recordIndex].saved === false)
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 hinsuranceAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Health Insurance?');
-        } else {
-            alertRef.current.showConfirm((res) => {
+        } else
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 let params = [{ _modal: 'InsuranceList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'hinsurance': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
@@ -250,18 +277,18 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                     <form>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                                <label>Health Insurance Provider Name</label>
+                                <label>Provider Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.insureProvidName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.insureProvidName} onChange={e => { formRef.current.insureProvidName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.insureProvidName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>health Insurance Group Name</label>
+                                <label>Group Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.insureGroupdName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.insureGroupdName} onChange={e => { formRef.current.insureGroupdName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.insureGroupdName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -269,28 +296,45 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>ID Number</label>
                                 <input
                                     type="text"
+                                    placeholder="GHIID-00001"
                                     value={formRef.current.idNumber}
                                     className={`w-full rounded border ${!formRef.current.idNumber ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.idNumber = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>
-                        <div className="flex w-full justify-start items-center mt-3">
+
+                        <div className="flex w-full justify-start items-center mt-5">
                             <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="insureStatus" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label=" health Insurance Status Active/Inactive"
-                                name="insureStatus" 
-                                values={['Active', 'Inactive']} 
-                                required="Insurance status is required" 
-                            />    
+                                <label>Insurance Status ?</label>
+                                <div className="flex ml-1">
+                                    <div class="mr-5">
+                                        <input
+                                            class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                                            checked={formRef.current.isActive}
+                                            onChange={e => { formRef.current.isActive = e.currentTarget.checked; subRefresh(Date.now()); }}
+                                        />
+                                        <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault1">
+                                            Active
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input
+                                            class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                                            checked={!formRef.current.isActive}
+                                            onChange={e => { formRef.current.isActive = !e.currentTarget.checked; subRefresh(Date.now()); }}
+                                        />
+                                        <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault2">
+                                            Inactive
+                                        </label>
+                                    </div>
+                                </div>
+
+
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Valid From</label>
-                             <Datetime
+                                <label>Valid From</label>
+                                <Datetime
                                     className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
@@ -302,7 +346,7 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 />
                             </div>
                             <div className="w-1/3">
-                            <label>Valid Until</label>
+                                <label>Valid Until</label>
                                 <Datetime
                                     className={`w-full rounded ${!formRef.current.to ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
@@ -314,12 +358,14 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                     onChange={date => { formRef.current.to = date; subRefresh(Date.now()); }}
                                 />
                             </div>
+
                         </div>
-                        <div className="flex w-full justify-start items-center relative">
+                        <div className="flex w-full justify-start items-center mt-5">
                             <div className="w-1/3 mr-5">
                                 <label>Primary Care [Value]</label>
                                 <input
                                     type="text"
+                                    placeholder="1-9"
                                     value={formRef.current.primaryCare}
                                     className={`w-full rounded border ${!formRef.current.primaryCare ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.primaryCare = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -329,43 +375,56 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Special Visit[Value]</label>
                                 <input
                                     type="text"
+                                    placeholder="1-9"
                                     value={formRef.current.specialVisit}
                                     className={`w-full rounded border ${!formRef.current.specialVisit ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.specialVisit = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                             <div className="w-1/3">
-                            <label>Urgent Care Percentage</label>
+                                <label>Urgent Care</label>
                                 <input
                                     type="text"
+                                    placeholder="In %"
                                     value={formRef.current.urgentValue}
                                     className={`w-full rounded border ${!formRef.current.urgentValue ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.urgentValue = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                        <div className="w-1/3 mr-5">
-                                <label>Emergency %</label>
+                        <div className="flex w-full justify-start items-center mt-5">
+                            <div className="w-1/3 mr-5 ">
+                                <label>Total family Members</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.emergencyValue}
-                                    className={`w-full rounded border ${!formRef.current.emergencyValue ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.emergencyValue = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Number of family Members</label>
-                            <input
-                                    type="text"
+                                    placeholder="Enter Number"
                                     value={formRef.current.nofMembers}
                                     className={`w-full rounded border ${!formRef.current.nofMembers ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.nofMembers = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            
+                            <div className="w-1/3">
+                                <label>Emergency </label>
+                                <input
+                                    type="text"
+                                    placeholder="%"
+                                    value={formRef.current.emergencyValue}
+                                    className={`w-full rounded border ${!formRef.current.emergencyValue ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.emergencyValue = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 ml-5">
+                                <label>Another </label>
+                                <input
+                                    type="text"
+                                    placeholder="ABC"
+                                    value={formRef.current.emergencyValue}
+                                    className={`w-full rounded border ${!formRef.current.emergencyValue ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.emergencyValue = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
                         </div>
-                        
+
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="flex flex-col w-full">
                                 <label>Comments if any</label>
@@ -407,7 +466,7 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                         </div>
                     </form>
                 </div>
-            </div>
+            </div >
         </>
     );
 });

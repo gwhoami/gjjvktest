@@ -13,7 +13,8 @@ import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
 
-const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, monthlypayAddedList }) => {
+const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, monthlypayAddedList }) =>
+{
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -32,13 +33,15 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
     const progress_ref = useRef();
     const file_ref = useRef();
     const progress = useRef({ value: 0 });
-    const progressHandler = (event) => {
+    const progressHandler = (event) =>
+    {
         let percent = (event.loaded / event.total) * 100;
         progress.current.value = Math.round(percent);
         subRefresh(Date.now());
     }
 
-    const completeHandler = (event) => {
+    const completeHandler = (event) =>
+    {
         monthlypayAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
@@ -46,7 +49,8 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
     }
     const errorHandler = (event) => { }
     const abortHandler = (event) => { }
-    const fileChange = (evt) => {
+    const fileChange = (evt) =>
+    {
         let file = evt.currentTarget.files[0];
         if (typeof file === 'undefined') return;
         pageRef.current.selFileName = file.name;
@@ -54,20 +58,24 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    const countryCallback = (code, itm, idx) => {
+    const countryCallback = (code, itm, idx) =>
+    {
         itm.state = '';
         itm.country = code;
         subRefresh(Date.now());
     }
-    const stateList = (country) => {
+    const stateList = (country) =>
+    {
         return country === 'US' ? [...Constants.usa] : country === 'IN' ? [...Constants.india] : [];
     }
     let inputProps = {
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveMonthlypay = () => {
-        if (currentDom.current.querySelector('.err-input')) {
+    const saveMonthlypay = () =>
+    {
+        if (currentDom.current.querySelector('.err-input'))
+        {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
         }
@@ -79,12 +87,15 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         delete arr['isSubmit'];
         let params = isNew ? [{ _modal: 'InsuranceList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'monthlypay': arr } } }] :
             [{ _modal: 'InsuranceList', _condition: 'update', _find: { _id: pageData.current._id, 'monthlypay.id': arr.id }, _data: { $set: { "monthlypay.$": arr } }, _options: { upsert: false } }];
-        (async () => {
+        (async () =>
+        {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-            if (res.isError) {
+            if (res.isError)
+            {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
-            } else {
+            } else
+            {
                 arr.isSubmit = true;
                 let newlist = [...monthlypayAddedList.current];
                 newlist[recordIndex] = arr;
@@ -96,8 +107,10 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
             }
         })();
     }
-    const openFileUpload = () => {
-        if (typeof formRef.current.saved !== 'undefined') {
+    const openFileUpload = () =>
+    {
+        if (typeof formRef.current.saved !== 'undefined')
+        {
             ToastMessage({ type: 'error', message: 'Save the monthlypay and upload!', timeout: 1200 });
             return;
         }
@@ -105,7 +118,8 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         subRefresh(Date.now());
     }
     const modalRef = useRef();
-    const modalClose = useCallback((name, idx) => {
+    const modalClose = useCallback((name, idx) =>
+    {
         pageRef.current.title = '';
         pageRef.current.selFileName = '';
         pageRef.current.showProgress = false;
@@ -114,11 +128,14 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         pageRef.current.showProgressModal = !pageRef.current.showProgressModal; subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const modalSave = useCallback(() => {
-        if (!pageRef.current.title) {
+    const modalSave = useCallback(() =>
+    {
+        if (!pageRef.current.title)
+        {
             ToastMessage({ type: 'error', message: 'Please enter title', timeout: 1000 });
             return;
-        } else if (file_ref.current.files.length === 0) {
+        } else if (file_ref.current.files.length === 0)
+        {
             ToastMessage({ type: 'error', message: 'Please select document to upload', timeout: 1000 });
             return;
         }
@@ -134,7 +151,8 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         formdata.append("_id", pageData.current._id);
         formdata.append("recindex", recordIndex);
         //subRefresh(Date.now());
-        (async () => {
+        (async () =>
+        {
             var ajax = new XMLHttpRequest();
             ajax.upload.addEventListener("progress", progressHandler, false);
             ajax.addEventListener("load", completeHandler, false);
@@ -145,15 +163,18 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
         })();
         // eslint-disable-next-line
     }, []);
-    const openfilePicker = () => {
+    const openfilePicker = () =>
+    {
         file_ref.current.click()
     }
-    const modalViewClose = useCallback(() => {
+    const modalViewClose = useCallback(() =>
+    {
         pageRef.current.showUploadWin = !pageRef.current.showUploadWin;
         subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const getFileIcon = (ext) => {
+    const getFileIcon = (ext) =>
+    {
         return ext === '.pdf' ? faFilePdf :
             ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.bmp' || ext === 'gif' ? faFileImage :
                 ext === '.doc' || ext === '.docx' ? faFileWord :
@@ -161,26 +182,34 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                         ext === '.ppt' || ext === '.pptx' ? faFilePowerpoint :
                             faFile;
     }
-    const downloadFile = (itm) => {
+    const downloadFile = (itm) =>
+    {
         window.location.href = `${process.env.REACT_APP_API_URL}/api/client/download_document?oriname=${itm.oriname}&filename=${itm.filename}&dt=${Date.now()}`
     }
-    const removeFile = (itm, idx) => {
-        alertRef.current.showConfirm((res) => {
+    const removeFile = (itm, idx) =>
+    {
+        alertRef.current.showConfirm((res) =>
+        {
             if (res === 'no') return;
             monthlypayAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeMonthlypay = () => {
-        if (monthlypayAddedList.current[recordIndex].saved === false) {
-            alertRef.current.showConfirm((res) => {
+    const removeMonthlypay = () =>
+    {
+        if (monthlypayAddedList.current[recordIndex].saved === false)
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 monthlypayAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Monthlypay?');
-        } else {
-            alertRef.current.showConfirm((res) => {
+        } else
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 let params = [{ _modal: 'InsuranceList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'monthlypay': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
@@ -257,11 +286,12 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                 ></i>
                 <div className="pt-5 pb-3">
                     <form>
-                    <div className="flex w-full justify-start items-center relative">
+                        <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
                                 <label>First Name</label>
                                 <input
                                     type="text"
+                                    placeholder="First Name"
                                     value={formRef.current.firstName}
                                     className={`w-full rounded border ${!formRef.current.firstName ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.firstName = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -271,6 +301,7 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Last Name</label>
                                 <input
                                     type="text"
+                                    placeholder="Last Name"
                                     value={formRef.current.lastName}
                                     className={`w-full rounded border ${!formRef.current.lastName ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.lastName = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -280,31 +311,32 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Gender</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.genderType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.genderType} onChange={e => { formRef.current.genderType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.genderType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>House Type</label>
-                            <select
+                                <label>House Type</label>
+                                <select
                                     className={`border w-full p-2 rounded ${!formRef.current.houseType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.houseType} onChange={e => { formRef.current.houseType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.houseType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>House Size</label>
+                                <label>House Size</label>
                                 <input
                                     type="text"
+                                    placeholder="Size"
                                     value={formRef.current.houseSize}
                                     className={`w-full rounded border ${!formRef.current.houseSize ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.houseSize = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                             <div className="w-1/3">
-                            <label>Year of Build</label>
+                                <label>Year of Build</label>
                                 <Datetime
                                     className={`w-full rounded ${!formRef.current.houseYear ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
@@ -337,7 +369,7 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 />
                             </div>
                             <div className="w-1/3">
-                            <label>LandMark</label>
+                                <label>LandMark</label>
                                 <input
                                     type="text"
                                     value={formRef.current.landmark}
@@ -346,7 +378,7 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 />
                             </div>
                         </div>
-                                                   
+
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
                                 <label>Country</label>
@@ -378,22 +410,22 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
 
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="solar" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                name="solar" 
-                                label="Do you have solar" 
-                                values={['Yes', 'No']} 
-                                required="Yes/No is required" 
-                            />
+                                <InputRadio
+                                    styleClass="flex flex-col mb-3"
+                                    formKey="solar"
+                                    formRef={regRef}
+                                    ui={ui}
+                                    name="solar"
+                                    label="Do you have solar"
+                                    values={['Yes', 'No']}
+                                    required="Yes/No is required"
+                                />
                             </div>
                             <div className="w-1/3 mr-5">
-                            
+
                             </div>
                             <div className="w-1/3">
-                            
+
                             </div>
                         </div>
 
