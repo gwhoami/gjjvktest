@@ -8,12 +8,15 @@ import { formList } from "./formLists";
 import RegularForm from "./regularForm";
 import MyLocalStorage from "../../util/mylocalStorage";
 
-const RegularPanel = React.memo(({ collegeAddedList, pageData, ui, uiRefresh, regularMenus }) => {
+const RegularPanel = React.memo(({ collegeAddedList, pageData, ui, uiRefresh, regularMenus }) =>
+{
     const alertRef = useRef();
     const { scrollRef } = useContext(UserContext);
-    const addRegular = () => {
+    const addRegular = () =>
+    {
         let idx = collegeAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
-        if (idx !== -1) {
+        if (idx !== -1)
+        {
             ToastMessage({ type: 'error', message: 'Please save the college!', timeout: 1000 });
             return;
         }
