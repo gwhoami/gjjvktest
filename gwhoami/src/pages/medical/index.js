@@ -12,6 +12,7 @@ import AllergiesPanel from "./allergies";
 import HealthinfoPanel from "./healthinfo";
 import SurgeryPanel from "./surgery";
 import MedicationPanel from "./medication";
+import { formList } from "./formLists";
 
 const MedicalTabs = React.memo(() => {
     const [ui, uiRefresh] = useState(-1);
@@ -22,18 +23,20 @@ const MedicalTabs = React.memo(() => {
     const healthinfoAddedList = useRef([]);
     const surgeryAddedList = useRef([]);
     const medicationAddedList = useRef([]);
+    const collegeAddedList = useRef([]);
+    const regularMenus = useRef([]);
 
     const { tabid } = useParams();
     useEffect(() => {
         (async () => {
-            let search = [{ _modal: 'MedicalList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'regular immune allergi healthinfo surgery medication' }];
+            let search = [{ _modal: 'MedicalList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'regular immune allergi healthinfo surgery medication college' }];
             const res = await apiPostCall('/api/common/common_search', { _list: search });
             if (res.isError) {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
             } else {
                 if (res && res.length === 0) {
-                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'MedicalList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), regular: [], immune: [], allergi: [], healthinfo: [], surgery: [], medication: [] } }] });
+                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'MedicalList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), regular: [], immune: [], allergi: [], healthinfo: [], surgery: [], medication: [], college: [] } }] });
                     pageData.current._id = newrecord.upsertedId;
                 } else {
                     pageData.current._id = res._id;
@@ -43,6 +46,15 @@ const MedicalTabs = React.memo(() => {
                     healthinfoAddedList.current = res.healthinfo || [];
                     surgeryAddedList.current = res.surgery || [];
                     medicationAddedList.current = res.medication || [];
+                    collegeAddedList.current = res.colleges || [];
+                   
+                    let cm = [...formList.regularMenu];
+                    collegeAddedList.current.map(s => s.bloods.map(c => c.blood)).map(arr => arr.forEach(itm => {
+                        cm.splice(cm.indexOf(itm), 1);
+                    }));
+                    regularMenus.current = [...cm];
+
+
                 }
                 pageData.current.init = true;
                 uiRefresh(Date.now());
@@ -55,7 +67,7 @@ const MedicalTabs = React.memo(() => {
         <div className="flex px-6 w-full container justify-center mx-auto pb-5">
             <div className="sm:w-full md:w-full xl:w-3/5 mt-20">
                 <Tabs
-                    selectedTabKey={tabid === 'regular' ? 0 : tabid === 'immune' ? 1 : tabid === 'allergi' ? 2 :  tabid === 'healthinfo' ? 3 : tabid === 'surgery' ? 4 :  tabid === 'medication' ? 5 : 0}
+                    selectedTabKey={tabid === 'regular' ? 0 : tabid === 'immune' ? 1 : tabid === 'allergi' ? 2 :  tabid === 'healthinfo' ? 3 : tabid === 'surgery' ? 4 :  tabid === 'medication' ? 5 :  tabid === 'college' ? 6 : 0}
                     transformWidth={600}
                     tabClassName="bg-red-100"
                     items={[{
@@ -63,7 +75,7 @@ const MedicalTabs = React.memo(() => {
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
                         getContent: () => {
-                            return <RegularPanel regularAddedList={regularAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
+                            return <RegularPanel collegeAddedList={collegeAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} regularMenus={regularMenus} />
                         }
                     }, {
                         title: 'Immunization',

@@ -24,6 +24,7 @@ const NavList = {
             { name: 'School', path: "/user/education/school" },
             { name: 'College', path: "/user/education/college" },
             { name: 'Others', path: "/user/education/other" }
+           
         ]
     }, {
         menu: 'Medical',
@@ -35,7 +36,7 @@ const NavList = {
             { icon: <i className="bx bxs-virus"></i>, name: 'Allergies', path: "/user/medical/allergi" },
             { icon: <i className="bx bxs-first-aid"></i>, name: 'Health-Info', path: "/user/medical/healthinfo" },
             { icon: <i className="bx bxs-hotel"></i>, name: 'Surgery', path: "/user/medical/surgery" },
-            { icon: <i className="bx bx-capsule"></i>, name: 'Medication', path: "/user/medical/medication" }
+            { icon: <i className="bx bx-capsule"></i>, name: 'Medication', path: "/user/medical/medication" },
         ]
     }, {
         menu: 'Insurance',

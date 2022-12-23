@@ -14,6 +14,7 @@ export const formList = {
         zipcode: '',
         from: '',
         to: '',
+        anotherValue: '',
         isActive: true,
         insuranceComments: '',
         documents: []

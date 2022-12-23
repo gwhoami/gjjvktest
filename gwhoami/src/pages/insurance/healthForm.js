@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import Datetime from "react-datetime";
-import Constants from "../../helper/Constants";
+//import Constants from "../../helper/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFileAlt, faFileExcel, faFileImage, faFilePdf, faFilePowerpoint, faFileWord, faSave, faSearch, faTrashAlt, faUpload } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../../toast";
@@ -9,13 +9,14 @@ import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
-import { InputRadio } from "../../component/forms";
+
+//import { InputRadio } from "../../component/forms";
 // import { UserContext } from "../../util/maincontext";
 
 const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, hinsuranceAddedList }) =>
 {
-    const [ui] = useState(-1);
-    const regRef = useRef({ ...Constants.user_empty_form });
+   // const [ui] = useState(-1);
+   // const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
     const currentDom = useRef();
     // const { scrollRef } = useContext(UserContext);
@@ -270,7 +271,7 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                 </ModalDialog>}
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
-                    className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                    className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
                     onClick={removeHinsurance}
                 ></i>
                 <div className="pt-5 pb-3">
@@ -329,8 +330,6 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                         </label>
                                     </div>
                                 </div>
-
-
                             </div>
                             <div className="w-1/3 mr-5">
                                 <label>Valid From</label>
@@ -418,9 +417,9 @@ const HinsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <input
                                     type="text"
                                     placeholder="ABC"
-                                    value={formRef.current.emergencyValue}
-                                    className={`w-full rounded border ${!formRef.current.emergencyValue ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.emergencyValue = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.anotherValue}
+                                    className={`w-full rounded border ${!formRef.current.anotherValue ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.anotherValue = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>

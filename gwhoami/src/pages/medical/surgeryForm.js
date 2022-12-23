@@ -244,7 +244,7 @@ const SurgeryForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                 </ModalDialog>}
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
-                    className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                    className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
                     onClick={removeSurgery}
                 ></i>
                 <div className="pt-5 pb-3">

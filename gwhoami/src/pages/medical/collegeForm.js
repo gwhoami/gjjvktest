@@ -13,8 +13,7 @@ import { nanoid } from "nanoid";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
 
-
-const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageData, recordIndex, collegeAddedList }) => {
+const CollegeForm = React.memo(({ form, uiRefresh, collegeMenus, alertRef, pageData, recordIndex, collegeAddedList }) => {
     const formRef = useRef(form);
     const currentDom = useRef();
     const { scrollRef } = useContext(UserContext);
@@ -60,17 +59,17 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
     const menuItemClassName = ({ hover, disabled, submenu }) =>
         `focus:outline-none px-5 ${hover && "text-sky-b bg-white"
         }`;
-    const addBlood = (blood) => {
+    const addMajor = (major) => {
         if (document.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: 'Please fill the required fields.' })
             return;
         }
-        if (!formRef.current.bloods) {
-            formRef.current.bloods = [{ id: nanoid(), blood, year: '', place: '', country: '', state: '', zipcode: '' }]
+        if (!formRef.current.majors) {
+            formRef.current.majors = [{ id: nanoid(), major, year: '', place: '', country: '', state: '', zipcode: '' }]
         } else {
-            formRef.current.bloods.push({ id: nanoid(), blood, year: '', place: '', country: '', state: '', zipcode: '' });
+            formRef.current.majors.push({ id: nanoid(), major, year: '', place: '', country: '', state: '', zipcode: '' });
         }
-        regularMenus.current.splice(regularMenus.current.indexOf(blood), 1);
+        collegeMenus.current.splice(collegeMenus.current.indexOf(major), 1);
         subRefresh(Date.now());
         setTimeout(() => scrollRef.current.scrollToBottom(), 200);
     }
@@ -87,7 +86,7 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
         className: "w-full rounded"
     };
     const yearRange = () => {
-        const years = formRef.current.bloods.map(i => i.year || 0);
+        const years = formRef.current.majors.map(i => i.year || 0);
         const min = Math.min(...years);
         const max = Math.max(...years);
         let min_val = 0, max_val = 0;
@@ -102,22 +101,22 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
             </>
         );
     }
-    const removeBlood = (idx) => {
+    const removeMajor = (idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            let deleteid = formRef.current.bloods[idx].id;
-            formRef.current.bloods.splice(idx, 1);
-            let sm = [...formList.regularMenu];
-            collegeAddedList.current.map(s => s.bloods.map(c => c.blood)).map(arr => arr.forEach(itm => {
+            let deleteid = formRef.current.majors[idx].id;
+            formRef.current.majors.splice(idx, 1);
+            let sm = [...formList.collegeMenu];
+            collegeAddedList.current.map(s => s.majors.map(c => c.major)).map(arr => arr.forEach(itm => {
                 sm.splice(sm.indexOf(itm), 1);
             }));
-            regularMenus.current = sm;
+            collegeMenus.current = sm;
             subRefresh(Date.now());
-            let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { [`regular.${recordIndex}.bloods`]: { id: deleteid } } } }];
+            let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { [`college.${recordIndex}.majors`]: { id: deleteid } } } }];
             apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-        }, 'Sure?', 'Are you sure to remove this Blood Group and Details?');
+        }, 'Sure?', 'Are you sure to remove this major?');
     }
-    const saveRegular = () => {
+    const saveCollege = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -128,8 +127,8 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'regular': arr } } }] :
-            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'regular.id': arr.id }, _data: { $set: { "regular.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'college': arr } } }] :
+            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'college.id': arr.id }, _data: { $set: { "college.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -143,13 +142,13 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'general Medical Details added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'College added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the General Medical Details and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the college and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -223,21 +222,21 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeRegular = () => {
+    const removeCollege = () => {
         if (collegeAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
                 collegeAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Details?');
+            }, 'Confirm?', 'Are you sure to delete this college?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'regular': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'college': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
                 collegeAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Details?');
+            }, 'Confirm?', 'Are you sure to delete this college?');
         }
     }
     return (
@@ -303,10 +302,11 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                 </ModalDialog>}
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
-                    className='bx bxs-trash absolute right-12 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeRegular}
+                    className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                    onClick={removeCollege}
                 ></i>
                 <div className="flex justify-between items-center w-full mt-5">
+                    <h1 className="font-bold mr-2">{formRef.current.collegeName}</h1>
                     <div>
                         <Menu
                             direction="bottom"
@@ -319,14 +319,14 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                                 <button
                                     className="bg-red-600 w-32 py-1.5 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500"
                                 >
-                                    <i className='bx bx-plus mr-1 text-lg'></i> Add Blood Group
+                                    <i className='bx bx-plus mr-1 text-lg'></i> Add Major
                                 </button>
                             }
                         >
                             <MenuHeader><div className="py-1"></div></MenuHeader>
-                            {regularMenus.current.map((menu, idx) => (
+                            {collegeMenus.current.map((menu, idx) => (
                                 <MenuItem className={menuItemClassName} style={{ backgroundColor: "#FFF" }} key={idx}>
-                                    <div className="px-3 py-1 flex justify-start items-center text-sm" onClick={_ => addBlood(menu)}>{menu}</div>
+                                    <div className="px-3 py-1 flex justify-start items-center text-sm" onClick={_ => addMajor(menu)}>{menu}</div>
                                 </MenuItem>
                             ))}
                             <MenuHeader><div className="py-1"></div></MenuHeader>
@@ -335,51 +335,28 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                 </div>
                 <div className="pt-5 pb-3">
                     <form>
-                    <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                            <label>Hospital Name</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Blood Group</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.bloodGroup.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3">
-                            <label>Date of birth</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.from ? new Date(formRef.current.from) : ''}
-                                    onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
+                        <div className="mb-10">
+                            <label>College Name</label>
+                            <input
+                                type="text"
+                                value={formRef.current.collegeName}
+                                className={`w-full rounded border ${!formRef.current.collegeName ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                onChange={e => { formRef.current.collegeName = e.currentTarget.value; subRefresh(Date.now()); }}
+                            />
                         </div>
 
-                        {formRef.current?.bloods?.map((itm, idx) => (
+                        {formRef.current?.majors?.map((itm, idx) => (
                             <React.Fragment key={idx}>
                                 <React.Fragment>
-                                    <div className="flex w-full justify-start items-center relative mt-7">
+                                    <div className="flex w-full justify-start items-center relative">
                                         <i
-                                            className='bx bxs-trash absolute right-2 -top-4 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                                            title="Remove Blood Group Details"
-                                            onClick={_ => removeBlood(idx)}
+                                            className='bx bx-x absolute right-2 -top-4 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                                            title="Remove Major"
+                                            onClick={_ => removeMajor(idx)}
                                         ></i>
-
                                         <div className="w-1/3 mr-5">
-                                            <label>Blood Group</label>
-                                            <input type="text" value={itm.regularMenus} className="w-full rounded" onChange={null} readOnly={true} />
+                                            <label>Major</label>
+                                            <input type="text" value={itm.major} className="w-full rounded" onChange={null} readOnly={true} />
                                         </div>
                                         <div className="w-1/3 mr-5">
                                             <label>Select Year</label>
@@ -432,84 +409,13 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                                             />
                                         </div>
                                     </div>
-
-
-                                    <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/3 mr-5">
-                                <label>Age</label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.age}
-                                    className={`w-full rounded border ${!formRef.current.age ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.age = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Height</label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.height}
-                                    className={`w-full rounded border ${!formRef.current.height ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.height = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3">
-                            <label>Weight</label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.weight}
-                                    className={`w-full rounded border ${!formRef.current.weight ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.weight = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                            <label>Name of the Doctor</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.doctorName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>APGAR Score</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.apgarScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.apgarScore} onChange={e => { formRef.current.apgarScore = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.apgarScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3">
-                            <label>Other Score</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.otherScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.otherScore} onChange={e => { formRef.current.otherScore = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.otherScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="flex flex-col w-full">
-                                <label>Comments/Recent Activity Weight and Length, Eye Drops, Vitamin K, Newborn Screening, Hepatities Vaccine</label>
-                                <textarea
-                                    className={`w-full rounded border ${!formRef.current.regularComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.regularComments}
-                                    onChange={e => { formRef.current.regularComments = e.currentTarget.value; subRefresh(Date.now()); }}
-                                    rows={4}
-                                >
-                                </textarea>
-                            </div>
-                        </div>
-
-
                                 </React.Fragment>
                                 <div className="pt-8 pb-5"><hr className="border-gray-400" /> </div>
                             </React.Fragment>
                         ))}
 
                         
-                        {formRef.current?.bloods?.length > 0 &&
+                        {formRef.current?.majors?.length > 0 &&
                             <>
                                 <div className="flex justify-between items-end">
                                     <div className="flex">
@@ -530,7 +436,7 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                                     <div className="flex items-end">
                                         <button
                                             type="button"
-                                            onClick={saveRegular}
+                                            onClick={saveCollege}
                                             className="bg-red-600 px-3 h-8 mr-5 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                         >
                                             {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -541,7 +447,7 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                                                 {yearRange()}
                                             </div>
                                         </div>
-               s                     </div>
+                                    </div>
                                 </div>
                             </>
                         }
@@ -552,4 +458,4 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
     );
 });
 
-export default RegularForm;
+export default CollegeForm;

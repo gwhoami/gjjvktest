@@ -249,7 +249,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                 </ModalDialog>}
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
-                    className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                    className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
                     onClick={removeAllergi}
                 ></i>
                 <div className="pt-5 pb-3">
@@ -261,6 +261,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                     type="text"
                                     value={formRef.current.firstName}
                                     placeholder="First Name"
+                                    disabled={true}
                                     className={`w-full rounded border ${!formRef.current.firstName ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.firstName = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
@@ -270,6 +271,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                 <input
                                     type="text"
                                     placeholder="Last Name"
+                                    disabled={true}
                                     value={formRef.current.lastName}
                                     className={`w-full rounded border ${!formRef.current.lastName ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.lastName = e.currentTarget.value; subRefresh(Date.now()); }}

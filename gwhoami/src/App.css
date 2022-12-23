@@ -518,6 +518,7 @@ select:focus {
 
 .RRT__container div[role="tabpanel"] {
   display: block !important;
+  background-color: rgb(121, 15, 15);
   width: 100%;
 }
 

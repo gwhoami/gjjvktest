@@ -4,7 +4,9 @@ export const formList = {
         isSubmit: true,
         firstName: '',
         lastName: '',
+        regularName:'',
         regularType: '',
+        blood:'',
         age:'',
         country: '',
         state: '',
@@ -17,6 +19,7 @@ export const formList = {
         regularComments: '',
         documents: []
     },
+    regularMenu: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     regularType: ['Male', 'Female', 'Other'],
     localeByCountry: {
         'IN': 'en-IN',
@@ -115,4 +118,22 @@ export const formList = {
     },
     medicationType: ['Flu' , 'Cold'],
     refill:['Yes' , 'No'],
+    college: {
+        collegeName: '',
+        saved: false,
+        isSubmit: true,
+        blood:'',
+        year:'',
+        place:'',
+        country:'',
+        state:'',
+        zipcode:'',
+        documents: []
+        
+
+        // majors: [
+        //     {major: '', year: '', place: '', country: '', state: '', zipcode: ''}
+        // ]
+    },
+    collegeMenu: ['Computer Science', 'Communications', 'Government/Political Science', 'Biology']
 };
