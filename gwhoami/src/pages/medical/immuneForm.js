@@ -302,7 +302,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     {stateList(formRef.current.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                            <div className="w-1/3">
+                            <div className="w-1/3 mr-5">
                                 <label>Zip Code</label>
                                 <input
                                     type="text"
@@ -336,7 +336,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            <div className="w-1/3">
+                            <div className="w-1/3 mr-5">
                             <label>Dose Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.doseName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doseName} onChange={e => { formRef.current.doseName = e.currentTarget.value; subRefresh(Date.now()) }}>
@@ -349,30 +349,6 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
 
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="regularType" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label="Male / Female"
-                                name="regularType" 
-                                values={['Male', 'Female']} 
-                                required="Male/Female is required" 
-                            />                 
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="secondDose" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label="Do you have 2nd Dose?"
-                                name="secondDose" 
-                                values={['Yes', 'No']} 
-                                required="Do you have 2nd Dose? is required" 
-                            />    
-                            </div>
-                            <div className="w-1/3">
                             <label> When was the Last Dose?</label>
                             <Datetime
                                     className={`w-full rounded ${!formRef.current.lastDose ? 'invalidyear' : ''}`}
@@ -384,6 +360,18 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     value={formRef.current.lastDose ? new Date(formRef.current.lastDose) : ''}
                                     onChange={date => { formRef.current.lastDose = date; subRefresh(Date.now()); }}
                                 />
+                             </div>
+                            <div className="w-1/3 mr-5">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="secondDose" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                label="Do you have 2nd Dose?"
+                                name="secondDose" 
+                                values={['Yes', 'No']} 
+                                required="Do you have 2nd Dose? is required" 
+                            />    
                             </div>
                         </div>
                         

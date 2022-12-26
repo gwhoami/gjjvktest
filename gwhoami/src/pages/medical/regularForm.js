@@ -12,10 +12,14 @@ import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
+import { InputDOB } from "../../component/forms";
 
 
-const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageData, recordIndex, collegeAddedList }) =>
+const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, recordIndex, collegeAddedList }) =>
 {
+    const [ui, uiRefresh] = useState(-1);
+   
+    const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
     const currentDom = useRef();
     const { scrollRef } = useContext(UserContext);
@@ -346,9 +350,6 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                 <div className="flex justify-between items-center w-full mt-5">
                     <div>
 
-
-
-
                         <div className="px-3 py-1 flex justify-start items-center text-sm" onClick={_ => addBlood()}>
                             <button
                                 className="bg-red-600 w-32 py-1.5 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500"
@@ -356,7 +357,6 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                                 <i className='bx bx-plus mr-1 text-lg'></i> Add Blood Group
                             </button>
                         </div>
-
 
 
 
@@ -385,15 +385,16 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
                             <div className="w-1/3">
                                 <label>Date of birth</label>
                                 <Datetime
-                                    className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
+                                    className={`w-full rounded ${!formRef.current.dob ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
                                     closeOnSelect={true}
                                     timeFormat={false}
                                     inputProps={inputProps}
-                                    value={formRef.current.from ? new Date(formRef.current.from) : ''}
-                                    onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
+                                    value={formRef.current.dob ? new Date(formRef.current.dob) : ''}
+                                    onChange={date => { formRef.current.dob = date; subRefresh(Date.now()); }}
                                 />
+                                
                             </div>
                         </div>
 

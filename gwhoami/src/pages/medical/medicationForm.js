@@ -8,9 +8,14 @@ import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
+import { InputRadio } from "../../component/forms";
+import Constants from "../../helper/Constants";
 // import { UserContext } from "../../util/maincontext";
 
 const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, medicationAddedList }) => {
+    const [ui] = useState(-1);
+    const regRef = useRef({ ...Constants.user_empty_form });
+    
     const formRef = useRef(form);
     const currentDom = useRef();
     // const { scrollRef } = useContext(UserContext);
@@ -245,7 +250,16 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                 <div className="pt-5 pb-3">
                     <form>
                         <div className="flex w-full justify-start items-center relative">
-                            <div className="w-4/5 mr-5">
+                            <div className="w-1/3 mr-5">
+                                <label>Name of the Provider</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.providerName}
+                                    className={`w-full rounded border ${!formRef.current.providerName ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.providerName = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
                                 <label>Name of the medicine</label>
                                 <input
                                     type="text"
@@ -254,7 +268,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                     onChange={e => { formRef.current.medicineName = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            <div className="w-3/4 mr-5">
+                            <div className="w-1/3 mr-5">
                                 <label>Medicine Dose</label>
                                 <input
                                     type="text"
@@ -287,7 +301,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                     onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            <div className="w-1/3">
+                            <div className="w-1/3 mr-5">
                                 <label>To</label>
                                 <Datetime
                                     className={`w-full rounded ${!formRef.current.to ? 'invalidyear' : ''}`}
@@ -303,29 +317,18 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                         </div>
                         <div className="flex w-full justify-start items-center mt-3">
                         <div className="w-1/3 mr-5">
-                            <label>Do you have any refill?</label>
-                                <div class="flex">
-                                    <input
-                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
-                                        checked={formRef.current.isRecentMedication}
-                                        onChange={e => { formRef.current.isRecentMedication = e.currentTarget.checked; subRefresh(Date.now()); }}
-                                    />
-                                    <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault1">
-                                        Yes
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input
-                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
-                                        checked={!formRef.current.isRecentMedication}
-                                        onChange={e => { formRef.current.isRecentMedication = !e.currentTarget.checked; subRefresh(Date.now()); }}
-                                    />
-                                    <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault2">
-                                        No
-                                    </label>
-                                </div>
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="isNeedRefill" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                label="Do you have any refill?"
+                                name="isNeedRefill" 
+                                values={['Yes', 'No']} 
+                                required="Do you have any refill is required" 
+                            />    
                             </div>
-                         
+                        
                             <div className="w-1/3 mr-5">
                             <label>When do you need refill</label>
                             <Datetime
@@ -339,19 +342,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                     onChange={date => { formRef.current.refill = date; subRefresh(Date.now()); }}
                                 />
                             </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/2 mr-5">
-                                <label>Name of the provider</label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.providerName}
-                                    className={`w-full rounded border ${!formRef.current.providerName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.providerName = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            
-                            <div className="w-1/2 mr-5">
+                            <div className="w-1/3 mr-5">
                                 <label>Pharmacy details</label>
                                 <input
                                     type="text"
@@ -361,7 +352,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 />
                             </div>
                         </div>
-                                           
+                                                          
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="flex flex-col w-full">
                                 <textarea
