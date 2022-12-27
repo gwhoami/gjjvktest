@@ -263,7 +263,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <label>Name of the Immunization</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.immuneName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.immuneName} onChange={e => { formRef.current.immuneName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.immuneName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -271,7 +271,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <label>Hospital Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -279,7 +279,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                 <label>Doctor Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select--</option>
                                     {formList.doctorName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -298,7 +298,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>State</label>
                                 <select className={`border w-full p-2 rounded ${!formRef.current.state ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.state} onChange={e => { formRef.current.state = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">--Select State--</option>
                                     {stateList(formRef.current.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -306,6 +306,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                 <label>Zip Code</label>
                                 <input
                                     type="text"
+                                    placeholder="Enter Zip code"
                                     value={formRef.current.zipcode}
                                     className={`w-full rounded border ${!formRef.current.zipcode ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -318,6 +319,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <label>Age</label>
                                 <input
                                     type="text"
+                                    placeholder="Enter Age"
                                     value={formRef.current.age}
                                     className={`w-full rounded border ${!formRef.current.age ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.age = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -340,7 +342,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <label>Dose Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.doseName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doseName} onChange={e => { formRef.current.doseName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">Select Dose Name</option>
                                     {formList.doseName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -369,6 +371,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                 ui={ui} 
                                 label="Do you have 2nd Dose?"
                                 name="secondDose" 
+                                placeholder="Second Dose"
                                 values={['Yes', 'No']} 
                                 required="Do you have 2nd Dose? is required" 
                             />    

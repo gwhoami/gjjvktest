@@ -181,6 +181,10 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
             }, 'Confirm?', 'Are you sure to delete this medication?');
         }
     }
+    //T display the date after option
+    const addOptRefill = () => {
+       console.log(`Please fill the required fields`)
+        }
     return (
         <>
             {pageRef.current.showUploadWin &&
@@ -254,6 +258,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Name of the Provider</label>
                                 <input
                                     type="text"
+                                    placeholder="Provider Name"
                                     value={formRef.current.providerName}
                                     className={`w-full rounded border ${!formRef.current.providerName ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.providerName = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -263,6 +268,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Name of the medicine</label>
                                 <input
                                     type="text"
+                                    placeholder="Medicine name"
                                     value={formRef.current.medicineName}
                                     className={`w-full rounded border ${!formRef.current.medicineName ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.medicineName = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -272,6 +278,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Medicine Dose</label>
                                 <input
                                     type="text"
+                                    placeholder="Medicine Dose"
                                     value={formRef.current.medicineDose}
                                     className={`w-full rounded border ${!formRef.current.medicineDose ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.medicineDose = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -284,7 +291,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Status</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.status ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.status} onChange={e => { formRef.current.status = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">Select Status</option>
                                     {formList.status.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -316,7 +323,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center mt-3">
-                        <div className="w-1/3 mr-5">
+                        <div className="w-1/3 mr-5" onClick={_ => addOptRefill()}>
                             <InputRadio 
                                 styleClass="flex flex-col mb-3" 
                                 formKey="isNeedRefill" 
@@ -346,6 +353,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                                 <label>Pharmacy details</label>
                                 <input
                                     type="text"
+                                    placeholder="Pharmacy Details"
                                     value={formRef.current.pharmacyDetail}
                                     className={`w-full rounded border ${!formRef.current.pharmacyDetail ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.pharmacyDetail = e.currentTarget.value; subRefresh(Date.now()); }}

@@ -357,9 +357,6 @@ const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, record
                                 <i className='bx bx-plus mr-1 text-lg'></i> Add Blood Group
                             </button>
                         </div>
-
-
-
                     </div>
 
                 </div>

@@ -33,7 +33,7 @@ export const formList = {
     bloodGroup:['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     doctorName:['Rajashekar', 'Vijaya', 'Latha'],
     immuneName:['Covid', 'Flu' , 'Booster'],
-    apgarScore:['AAA', 'BBB'],
+    apgarScore:['10', '9', '8', '7', '6', '5', '4', '3', '2', '1'],
     otherScore:['A+', 'A', 'B+'],
     immune: {
         saved: false,
