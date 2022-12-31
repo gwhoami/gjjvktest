@@ -5,7 +5,7 @@ import Constants from "../../helper/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFileAlt, faFileExcel, faFileImage, faFilePdf, faFilePowerpoint, faFileWord, faSave, faSearch, faTrashAlt, faUpload } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../../toast";
-import { ButtonLoader} from "../../component/forms";
+import { ButtonLoader } from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
@@ -13,7 +13,7 @@ import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
 
-const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, immuneAddedList }) => {
+const GeneralForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, generalAddedList }) => {
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -39,7 +39,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
     }
 
     const completeHandler = (event) => {
-        immuneAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        generalAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -66,7 +66,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveImmune = () => {
+    const saveGeneral = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -77,8 +77,8 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'immune': arr } } }] :
-            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'immune.id': arr.id }, _data: { $set: { "immune.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'BankcreditList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'general': arr } } }] :
+            [{ _modal: 'BankcreditList', _condition: 'update', _find: { _id: pageData.current._id, 'general.id': arr.id }, _data: { $set: { "general.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -86,19 +86,19 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                 return;
             } else {
                 arr.isSubmit = true;
-                let newlist = [...immuneAddedList.current];
+                let newlist = [...generalAddedList.current];
                 newlist[recordIndex] = arr;
-                immuneAddedList.current = newlist;
+                generalAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Immune added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'General Details added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the immune and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the general and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -167,26 +167,26 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
     const removeFile = (itm, idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            immuneAddedList.current[recordIndex].documents.splice(idx, 1);
+            generalAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeImmune = () => {
-        if (immuneAddedList.current[recordIndex].saved === false) {
+    const removeGeneral = () => {
+        if (generalAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                immuneAddedList.current.splice(recordIndex, 1);
+                generalAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this immune?');
+            }, 'Confirm?', 'Are you sure to delete this general?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'immune': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'BankcreditList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'general': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                immuneAddedList.current.splice(recordIndex, 1);
+                generalAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this immune?');
+            }, 'Confirm?', 'Are you sure to delete this general?');
         }
     }
     return (
@@ -252,35 +252,35 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                 </ModalDialog>}
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
-                    className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeImmune}
+                    className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                    onClick={removeGeneral}
                 ></i>
                 <div className="pt-5 pb-3">
-                    
                     <form>
-                        <div className="flex w-full justify-start items-center relative">
+                    <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Name of the Immunization</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.immuneName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.immuneName} onChange={e => { formRef.current.immuneName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
-                                    {formList.immuneName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                <label>Bank Name</label>
+                            <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.bankName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bankName} onChange={e => { formRef.current.bankName = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.bankName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Hospital Name</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
-                                    {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
+                                <label>Primary Person</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.primaryPerson}
+                                    className={`w-full rounded border ${!formRef.current.primaryPerson ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.primaryPerson = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                             </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Doctor Name</label>
+                            <div className="w-1/3">
+                                <label>Bussiness Type</label>
                                 <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">-- Select --</option>
-                                    {formList.doctorName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    className={`border w-full p-2 rounded ${!formRef.current.businessType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.businessType} onChange={e => { formRef.current.businessType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.businessType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                         </div>
@@ -298,98 +298,197 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>State</label>
                                 <select className={`border w-full p-2 rounded ${!formRef.current.state ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.state} onChange={e => { formRef.current.state = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">-- Select State --</option>
+                                    <option value=""></option>
                                     {stateList(formRef.current.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                            <div className="w-1/3 mr-5">
+                            <div className="w-1/3">
                                 <label>Zip Code</label>
                                 <input
                                     type="text"
-                                    placeholder="Enter Zip code"
                                     value={formRef.current.zipcode}
                                     className={`w-full rounded border ${!formRef.current.zipcode ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>
-
-                        <div className="flex w-full justify-start items-center mt-3">
+                        <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Age</label>
+                            <label>Created On</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.createdOn ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.createdOn ? new Date(formRef.current.createdOn) : ''}
+                                    onChange={date => { formRef.current.createdOn = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Customer ID</label>
                                 <input
                                     type="text"
-                                    placeholder="Enter Age"
-                                    value={formRef.current.age}
-                                    className={`w-full rounded border ${!formRef.current.age ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.age = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.custId}
+                                    className={`w-full rounded border ${!formRef.current.custId ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.custId = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Date of birth</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.from ? new Date(formRef.current.from) : ''}
-                                    onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Dose Name</label>
+                            <div className="w-1/3">
+                            <label>Account Type</label>
                                 <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.doseName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doseName} onChange={e => { formRef.current.doseName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">Select Dose Name</option>
-                                    {formList.doseName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    className={`border w-full p-2 rounded ${!formRef.current.acType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.acType} onChange={e => { formRef.current.acType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.acType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                            
                         </div>
-
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <label> When was the Last Dose?</label>
-                            <Datetime
-                                    className={`w-full rounded ${!formRef.current.lastDose ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.lastDose ? new Date(formRef.current.lastDose) : ''}
-                                    onChange={date => { formRef.current.lastDose = date; subRefresh(Date.now()); }}
-                                />
-                             </div>
+                            <label>Account Status</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.status ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.status} onChange={e => { formRef.current.status = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.status.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
                             <InputRadio 
                                 styleClass="flex flex-col mb-3" 
-                                formKey="secondDose" 
+                                formKey="acJoin" 
                                 formRef={regRef} 
                                 ui={ui} 
-                                label="Do you have 2nd Dose?"
-                                name="secondDose" 
-                                placeholder="Second Dose"
+                                name="acJoin" 
+                                label="Is this account Joined" 
                                 values={['Yes', 'No']} 
-                                required="Do you have 2nd Dose? is required" 
-                            />    
+                                required="Yes/No is required" 
+                            />
                             </div>
-                        </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Secondary Person</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.secondaryPerson}
+                                    className={`w-full rounded border ${!formRef.current.secondaryPerson ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.secondaryPerson = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            
+                            </div>
+                            <div className="w-1/3">
+                            <label>Relationship</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.relationship ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.relationship} onChange={e => { formRef.current.relationship = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.relationship.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            
+                            </div>
+                        </div> 
+                                                
                         
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="flex flex-col w-full">
-                                <label>Comments</label>
-                                <textarea
-                                    className={`w-full rounded border ${!formRef.current.immuneComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.immuneComments}
-                                    onChange={e => { formRef.current.immuneComments = e.currentTarget.value; subRefresh(Date.now()); }}
-                                    rows={4}
-                                >
-                                </textarea>
+                        
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Debit Card Number</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.debitCardNoP}
+                                    className={`w-full rounded border ${!formRef.current.debitCardNoP ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.debitCardNoP = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Expiration Date</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.expDateP ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.expDateP ? new Date(formRef.current.expDateP) : ''}
+                                    onChange={date => { formRef.current.expDateP = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                            <label>CVV</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.cvvNoP}
+                                    className={`w-full rounded border ${!formRef.current.cvvNoP ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.cvvNoP = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                             </div>
                         </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Debit Card Number</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.debitCardNoS}
+                                    className={`w-full rounded border ${!formRef.current.debitCardNoS ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.debitCardNoS = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Expiration Date</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.expDateS ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.expDateS ? new Date(formRef.current.expDateS) : ''}
+                                    onChange={date => { formRef.current.expDateS = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                            <label>CVV</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.cvvNoS}
+                                    className={`w-full rounded border ${!formRef.current.cvvNoS ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.cvvNoS = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="creditCard" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                name="creditCard" 
+                                label="Do You have Credit Card in this Bank" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Add Bank</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.addBank}
+                                    className={`w-full rounded border ${!formRef.current.addBank ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.addBank = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            
+                            </div>
+                            <div className="w-1/3">
+                            
+                            
+                            </div>
+                        </div>
+
+                        
                         <div className="flex justify-between items-end mt-3">
                             <div className="flex">
                                 <button
@@ -402,14 +501,14 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     onClick={modalViewClose}
                                     className="border border-gray-400 flex justify-between items-center text-sm px-4 py-1.5 ml-3 cursor-pointer hover:bg-gray-100 hover:border-dodge-d"
                                 >
-                                    <div>{formRef.current.documents.length} document(s) uploded</div>
+                                    <div>{formRef.current.documents.length} document(s) uploaded</div>
                                     <FontAwesomeIcon icon={faSearch} className="ml-2 text-dodge-d" />
                                 </div>
                             </div>
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveImmune}
+                                    onClick={saveGeneral}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -423,4 +522,4 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
     );
 });
 
-export default ImmuneForm;
+export default GeneralForm;

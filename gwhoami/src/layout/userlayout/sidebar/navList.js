@@ -60,6 +60,14 @@ const NavList = {
             { icon: <i className="bx bx-car"></i>, name: 'Property-Vehicle', path: "/user/properties/vehicles" }
         ]
     }, {
+        menu: 'Bankcredit',
+        icon: <i className="bx bx-money-withdraw"></i>,
+        sub: [
+            { name: 'BankCredit' },
+            { icon: <i className="bx bx-briefcase-alt"></i>, name: 'Bankgeneral', path: "/user/bankcredit/general" },
+            { icon: <i className="bx bx-home"></i>, name: 'Creditcard', path: "/user/bankcredit/Creditcard" }
+            ]
+    }, {
         menu: 'Settings',
         icon: <i className="bx bx-cog"></i>,
         sub: [

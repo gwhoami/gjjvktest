@@ -12,7 +12,7 @@ import { InputRadio } from "../../component/forms";
 import Constants from "../../helper/Constants";
 // import { UserContext } from "../../util/maincontext";
 
-const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, medicationAddedList }) => {
+const MedicationForm = React.memo(({form, uiRefresh, alertRef, pageData, recordIndex, medicationAddedList }) => {
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     
@@ -181,10 +181,8 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
             }, 'Confirm?', 'Are you sure to delete this medication?');
         }
     }
-    //T display the date after option
-    const addOptRefill = () => {
-       console.log(`Please fill the required fields`)
-        }
+    
+
     return (
         <>
             {pageRef.current.showUploadWin &&
@@ -323,7 +321,7 @@ const MedicationForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center mt-3">
-                        <div className="w-1/3 mr-5" onClick={_ => addOptRefill()}>
+                        <div className="w-1/3 mr-5">
                             <InputRadio 
                                 styleClass="flex flex-col mb-3" 
                                 formKey="isNeedRefill" 

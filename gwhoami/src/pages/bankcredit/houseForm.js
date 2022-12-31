@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
 import Datetime from "react-datetime";
-import ReactFlagsSelect from "react-flags-select";
 import Constants from "../../helper/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFileAlt, faFileExcel, faFileImage, faFilePdf, faFilePowerpoint, faFileWord, faSave, faSearch, faTrashAlt, faUpload } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +12,7 @@ import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
 
-const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, immuneAddedList }) => {
+const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, houseAddedList }) => {
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -39,7 +38,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
     }
 
     const completeHandler = (event) => {
-        immuneAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        houseAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -54,19 +53,12 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    const countryCallback = (code, itm, idx) => {
-        itm.state = '';
-        itm.country = code;
-        subRefresh(Date.now());
-    }
-    const stateList = (country) => {
-        return country === 'US' ? [...Constants.usa] : country === 'IN' ? [...Constants.india] : [];
-    }
+    
     let inputProps = {
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveImmune = () => {
+    const saveHouse = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -77,8 +69,8 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'immune': arr } } }] :
-            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'immune.id': arr.id }, _data: { $set: { "immune.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'PropertyList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'house': arr } } }] :
+            [{ _modal: 'PropertyList', _condition: 'update', _find: { _id: pageData.current._id, 'house.id': arr.id }, _data: { $set: { "house.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -86,19 +78,19 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                 return;
             } else {
                 arr.isSubmit = true;
-                let newlist = [...immuneAddedList.current];
+                let newlist = [...houseAddedList.current];
                 newlist[recordIndex] = arr;
-                immuneAddedList.current = newlist;
+                houseAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Immune added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'Property House is added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the immune and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the house and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -167,26 +159,26 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
     const removeFile = (itm, idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            immuneAddedList.current[recordIndex].documents.splice(idx, 1);
+            houseAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeImmune = () => {
-        if (immuneAddedList.current[recordIndex].saved === false) {
+    const removeHouse = () => {
+        if (houseAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                immuneAddedList.current.splice(recordIndex, 1);
+                houseAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this immune?');
+            }, 'Confirm?', 'Are you sure to delete this Vehicles?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'immune': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'PropertyList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'house': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                immuneAddedList.current.splice(recordIndex, 1);
+                houseAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this immune?');
+            }, 'Confirm?', 'Are you sure to delete this Vehicles?');
         }
     }
     return (
@@ -252,139 +244,174 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                 </ModalDialog>}
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
-                    className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeImmune}
+                    className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
+                    onClick={removeHouse}
                 ></i>
                 <div className="pt-5 pb-3">
                     
                     <form>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Name of the Immunization</label>
+                            <label>House Address</label>
                                 <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.immuneName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.immuneName} onChange={e => { formRef.current.immuneName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
-                                    {formList.immuneName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    className={`border w-full p-2 rounded ${!formRef.current.houseAddress ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.houseAddress} onChange={e => { formRef.current.houseAddress = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.houseAddress.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Hospital Name</label>
+                            <label>House Items</label>
                                 <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
-                                    {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    className={`border w-full p-2 rounded ${!formRef.current.holdItems ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.holdItems} onChange={e => { formRef.current.holdItems = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.holdItems.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                                <label>Doctor Name</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">-- Select --</option>
-                                    {formList.doctorName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                                <label>Country</label>
-                                <ReactFlagsSelect
-                                    className={`w-full rounded border ${!formRef.current.country ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    selected={formRef.current.country}
-                                    onSelect={(code) => countryCallback(code, formRef.current)}
-                                    countries={["US", "IN"]}
-                                    placeholder="Country"
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>State</label>
-                                <select className={`border w-full p-2 rounded ${!formRef.current.state ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.state} onChange={e => { formRef.current.state = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">-- Select State --</option>
-                                    {stateList(formRef.current.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Zip Code</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Zip code"
-                                    value={formRef.current.zipcode}
-                                    className={`w-full rounded border ${!formRef.current.zipcode ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                            <label>Age</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Age"
-                                    value={formRef.current.age}
-                                    className={`w-full rounded border ${!formRef.current.age ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.age = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Date of birth</label>
+                            <label>Year Of Purchase</label>
                                 <Datetime
-                                    className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
+                                    className={`w-full rounded ${!formRef.current.puchasYear ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
                                     closeOnSelect={true}
                                     timeFormat={false}
                                     inputProps={inputProps}
-                                    value={formRef.current.from ? new Date(formRef.current.from) : ''}
-                                    onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
+                                    value={formRef.current.puchasYear ? new Date(formRef.current.puchasYear) : ''}
+                                    onChange={date => { formRef.current.puchasYear = date; subRefresh(Date.now()); }}
                                 />
                             </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Dose Name</label>
+                            <label>Purchase Type</label>
                                 <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.doseName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doseName} onChange={e => { formRef.current.doseName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">Select Dose Name</option>
-                                    {formList.doseName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    className={`border w-full p-2 rounded ${!formRef.current.purchasType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.purchasType} onChange={e => { formRef.current.purchasType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.purchasType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                            
-                        </div>
-
-                        <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <label> When was the Last Dose?</label>
-                            <Datetime
-                                    className={`w-full rounded ${!formRef.current.lastDose ? 'invalidyear' : ''}`}
+                            <label>Vender Name</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.venderName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.venderName} onChange={e => { formRef.current.venderName = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.venderName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>House make</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.houseMake ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.houseMake} onChange={e => { formRef.current.houseMake = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.houseMake.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Year Of Warranty</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.warrantyYear ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
                                     closeOnSelect={true}
                                     timeFormat={false}
                                     inputProps={inputProps}
-                                    value={formRef.current.lastDose ? new Date(formRef.current.lastDose) : ''}
-                                    onChange={date => { formRef.current.lastDose = date; subRefresh(Date.now()); }}
+                                    value={formRef.current.warrantyYear ? new Date(formRef.current.warrantyYear) : ''}
+                                    onChange={date => { formRef.current.warrantyYear = date; subRefresh(Date.now()); }}
                                 />
-                             </div>
+                            </div>
                             <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="secondDose" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label="Do you have 2nd Dose?"
-                                name="secondDose" 
-                                placeholder="Second Dose"
-                                values={['Yes', 'No']} 
-                                required="Do you have 2nd Dose? is required" 
-                            />    
+                            <label>Warranty Expired On</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.warrantyExpire ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.warrantyExpire ? new Date(formRef.current.warrantyExpire) : ''}
+                                    onChange={date => { formRef.current.warrantyExpire = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Total Cost</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.totalCost}
+                                    className={`w-full rounded border ${!formRef.current.totalCost ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.totalCost = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                             </div>
                         </div>
                         
                         <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="ExtWarrenty" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                label="Do you parchase any Extended Warrenty?"
+                                name="ExtWarrenty" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />                 
+                            </div>
+                            <div className="w-1/3 mr-5">
+                           
+                            </div>
+                            <div className="w-1/3">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="partySupport" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                label="Do you have any party support from Vender?"
+                                name="partySupport" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />    
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Year Of Extended Warranty</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.extYear ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.extYear ? new Date(formRef.current.extYear) : ''}
+                                    onChange={date => { formRef.current.extYear = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Year of Party Warrenty</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.partywarranty ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.partywarranty ? new Date(formRef.current.partywarranty) : ''}
+                                    onChange={date => { formRef.current.partywarranty = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
                             <div className="flex flex-col w-full">
                                 <label>Comments</label>
                                 <textarea
-                                    className={`w-full rounded border ${!formRef.current.immuneComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.immuneComments}
-                                    onChange={e => { formRef.current.immuneComments = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    className={`w-full rounded border ${!formRef.current.houseComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    value={formRef.current.houseComments}
+                                    onChange={e => { formRef.current.houseComments = e.currentTarget.value; subRefresh(Date.now()); }}
                                     rows={4}
                                 >
                                 </textarea>
@@ -409,7 +436,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveImmune}
+                                    onClick={saveHouse}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -423,4 +450,4 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
     );
 });
 
-export default ImmuneForm;
+export default HouseForm;

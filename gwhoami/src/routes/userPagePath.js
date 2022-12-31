@@ -30,6 +30,11 @@ const userPagePath = [
         path: '/properties/:tabid',
         component: lazy(()=>import('../pages/properties/index')),
         exact: true
+    },
+    {
+        path: '/Bankcredit/:tabid',
+        component: lazy(()=>import('../pages/bankcredit/index')),
+        exact: true
     }
     
     

@@ -15,9 +15,9 @@ import { formList } from "./formLists";
 import { InputDOB } from "../../component/forms";
 
 
-const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, recordIndex, collegeAddedList }) =>
+const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, pageData, recordIndex, collegeAddedList }) =>
 {
-    const [ui, uiRefresh] = useState(-1);
+    const [ui] = useState(-1);
    
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -367,7 +367,7 @@ const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, record
                                 <label>Hospital Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">Select</option>
                                     {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -375,7 +375,7 @@ const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, record
                                 <label>Blood Group</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">Select</option>
                                     {formList.bloodGroup.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -407,7 +407,12 @@ const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, record
 
                                         <div className="w-1/3 mr-5">
                                             <label>Blood Group</label>
-                                            <input type="text" value={itm.regularMenus} className="w-full rounded" onChange={null} readOnly={true} />
+                                            <input type="text" 
+                                                  value={itm.regularMenus} 
+                                                  className="w-full rounded" 
+                                                  placeholder="Blood Group"
+                                                  onChange={null} readOnly={true} 
+                                            />
                                         </div>
                                         <div className="w-1/3 mr-5">
                                             <label>Select Year</label>
@@ -426,6 +431,7 @@ const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, record
                                             <label>Place</label>
                                             <input
                                                 type="text"
+                                                placeholder="Place"
                                                 value={itm.place}
                                                 className={`w-full rounded border ${!itm.place ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                                 onChange={e => { itm.place = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -446,7 +452,7 @@ const RegularForm = React.memo(({ form, regularMenus, alertRef, pageData, record
                                         <div className="w-1/3 mr-5">
                                             <label>State</label>
                                             <select className={`border w-full p-2 rounded ${!itm.state ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={itm.state} onChange={e => { itm.state = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                                <option value="">State</option>
+                                                <option value="" placeholder="State"></option>
                                                 {stateList(itm.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                             </select>
                                         </div>
