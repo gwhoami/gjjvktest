@@ -67,6 +67,17 @@ const NavList = {
             { icon: <i className="bx bx-briefcase-alt"></i>, name: 'Bankgeneral', path: "/user/bankcredit/general" },
             { icon: <i className="bx bx-home"></i>, name: 'Creditcard', path: "/user/bankcredit/creditcard" }
             ]
+        }, {
+            menu: 'Certificates',
+            icon: <i className="bx bx-landscape"></i>,
+            sub: [
+                { name: 'Certificates' },
+                { icon: <i className="bx bx-briefcase-alt"></i>, name: 'Personal', path: "/user/certificates/personal" },
+                { icon: <i className="bx bx-home"></i>, name: 'Religious', path: "/user/certificates/religious" },
+                { icon: <i className="bx bx-store-alt"></i>, name: 'Identity/Proof', path: "/user/certificates/identity" },
+                { icon: <i className="bx bx-car"></i>, name: 'Education', path: "/user/certificates/education" },
+                { icon: <i className="bx bx-car"></i>, name: 'Volunteer/Honorable', path: "/user/certificates/honorable" }
+            ]
     }, {
         menu: 'Settings',
         icon: <i className="bx bx-cog"></i>,

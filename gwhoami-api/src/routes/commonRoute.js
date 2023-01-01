@@ -9,6 +9,7 @@ const { InsuranceList } = require("../models/insuranceModel");
 const { MedicalList } = require("../models/medicalModel");
 const { PropertyList } = require("../models/propertyModel");
 const { BankcreditList } = require("../models/bankcreaditModel");
+const { CertificateList } = require("../models/certificateModel");
 const commonRouter = express.Router();
 
 const findParser = (request) => {
@@ -284,6 +285,7 @@ const getModal = (request) => {
         case 'MedicalList': modal = MedicalList; break;
         case 'PropertyList': modal = PropertyList; break;
         case 'BankcreditList': modal = BankcreditList; break;
+        case 'CertificateList': modal = CertificateList; break;
         default: modal = undefined; break;
     }
     return modal;
