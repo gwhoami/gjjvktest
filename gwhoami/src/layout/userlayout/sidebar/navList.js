@@ -69,7 +69,7 @@ const NavList = {
         ]
     }, {
         menu: 'Certificates',
-        icon: <i className="bx bx-landscape"></i>,
+        icon: <i className="bx bx-certification"></i>,
         sub: [
             { name: 'Certificates' },
             { icon: <i className="bx bxs-user"></i>, name: 'Personal', path: "/user/certificates/personal" },
