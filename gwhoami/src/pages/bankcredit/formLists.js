@@ -36,6 +36,31 @@ export const formList = {
     currencyByCountry: {
         'IN': 'INR',
         'US': 'USD'
+    },
+    creditcard: {
+        saved: false,
+        isSubmit: true,
+        bankName:'',
+        primaryPerson:'',
+        country: '',
+        state: '',
+        zipcode: '',
+        createdOn:'',
+        custId:'',
+        secondaryPerson:'',
+        creditCardNoP:'',
+        expDateP:'',
+        cvvNoP:'',
+        creditCardNoS:'',
+        expDateS:'',
+        cvvNoS:'',
+        accNo:'',
+        paymentdate:'',
+        routingNo:'',
+        addBank:'',
+        isRecentGeneral: true,
+        generalComments: '',
+        documents: []
     }
    
 };

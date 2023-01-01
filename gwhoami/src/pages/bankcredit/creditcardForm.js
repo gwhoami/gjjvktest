@@ -1,10 +1,11 @@
 import React, { useCallback, useRef, useState } from "react";
 import Datetime from "react-datetime";
+import ReactFlagsSelect from "react-flags-select";
 import Constants from "../../helper/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFileAlt, faFileExcel, faFileImage, faFilePdf, faFilePowerpoint, faFileWord, faSave, faSearch, faTrashAlt, faUpload } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../../toast";
-import { ButtonLoader} from "../../component/forms";
+import { ButtonLoader } from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
@@ -12,7 +13,7 @@ import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
 
-const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, houseAddedList }) => {
+const CreditcardForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, creditcardAddedList }) => {
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -38,7 +39,7 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
     }
 
     const completeHandler = (event) => {
-        houseAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        creditcardAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -53,12 +54,19 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    
+    const countryCallback = (code, itm, idx) => {
+        itm.state = '';
+        itm.country = code;
+        subRefresh(Date.now());
+    }
+    const stateList = (country) => {
+        return country === 'US' ? [...Constants.usa] : country === 'IN' ? [...Constants.india] : [];
+    }
     let inputProps = {
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveHouse = () => {
+    const saveCreditcard = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -69,8 +77,8 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'PropertyList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'house': arr } } }] :
-            [{ _modal: 'PropertyList', _condition: 'update', _find: { _id: pageData.current._id, 'house.id': arr.id }, _data: { $set: { "house.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'BankcreditList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'creditcard': arr } } }] :
+            [{ _modal: 'BankcreditList', _condition: 'update', _find: { _id: pageData.current._id, 'creditcard.id': arr.id }, _data: { $set: { "creditcard.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -78,19 +86,19 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
                 return;
             } else {
                 arr.isSubmit = true;
-                let newlist = [...houseAddedList.current];
+                let newlist = [...creditcardAddedList.current];
                 newlist[recordIndex] = arr;
-                houseAddedList.current = newlist;
+                creditcardAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Property House is added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'Bank Credit Card Details added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the house and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the Bank Credit Card Details and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -159,26 +167,26 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
     const removeFile = (itm, idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            houseAddedList.current[recordIndex].documents.splice(idx, 1);
+            creditcardAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeHouse = () => {
-        if (houseAddedList.current[recordIndex].saved === false) {
+    const removeCreditcard = () => {
+        if (creditcardAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                houseAddedList.current.splice(recordIndex, 1);
+                creditcardAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Vehicles?');
+            }, 'Confirm?', 'Are you sure to delete this Bank Credit Card Details?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'PropertyList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'house': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'BankcreditList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'creditcard': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                houseAddedList.current.splice(recordIndex, 1);
+                creditcardAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Vehicles?');
+            }, 'Confirm?', 'Are you sure to delete this Bank credit card Details?');
         }
     }
     return (
@@ -245,178 +253,267 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
                     className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeHouse}
+                    onClick={removeCreditcard}
                 ></i>
                 <div className="pt-5 pb-3">
-                    
                     <form>
-                        <div className="flex w-full justify-start items-center relative">
+                    <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>House Address</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.houseAddress ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.houseAddress} onChange={e => { formRef.current.houseAddress = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                <label>Bank Name</label>
+                            <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.bankName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bankName} onChange={e => { formRef.current.bankName = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
-                                    {formList.houseAddress.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    {formList.bankName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>House Items</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.holdItems ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.holdItems} onChange={e => { formRef.current.holdItems = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.holdItems.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Year Of Purchase</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.puchasYear ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.puchasYear ? new Date(formRef.current.puchasYear) : ''}
-                                    onChange={date => { formRef.current.puchasYear = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/3 mr-5">
-                            <label>Purchase Type</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.purchasType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.purchasType} onChange={e => { formRef.current.purchasType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.purchasType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Vender Name</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.venderName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.venderName} onChange={e => { formRef.current.venderName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.venderName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>House make</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.houseMake ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.houseMake} onChange={e => { formRef.current.houseMake = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.houseMake.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/3 mr-5">
-                            <label>Year Of Warranty</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.warrantyYear ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.warrantyYear ? new Date(formRef.current.warrantyYear) : ''}
-                                    onChange={date => { formRef.current.warrantyYear = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Warranty Expired On</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.warrantyExpire ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.warrantyExpire ? new Date(formRef.current.warrantyExpire) : ''}
-                                    onChange={date => { formRef.current.warrantyExpire = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Total Cost</label>
+                                <label>Primary Person</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.totalCost}
-                                    className={`w-full rounded border ${!formRef.current.totalCost ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.totalCost = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.primaryPerson}
+                                    className={`w-full rounded border ${!formRef.current.primaryPerson ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.primaryPerson = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
+                            <div className="w-1/3">
+                                <label>Bussiness Type</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.businessType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.businessType} onChange={e => { formRef.current.businessType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.businessType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            </div>
                         </div>
-                        
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="ExtWarrenty" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label="Do you parchase any Extended Warrenty?"
-                                name="ExtWarrenty" 
-                                values={['Yes', 'No']} 
-                                required="Yes/No is required" 
-                            />                 
+                                <label>Country</label>
+                                <ReactFlagsSelect
+                                    className={`w-full rounded border ${!formRef.current.country ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    selected={formRef.current.country}
+                                    onSelect={(code) => countryCallback(code, formRef.current)}
+                                    countries={["US", "IN"]}
+                                    placeholder="Country"
+                                />
                             </div>
                             <div className="w-1/3 mr-5">
-                           
+                                <label>State</label>
+                                <select className={`border w-full p-2 rounded ${!formRef.current.state ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.state} onChange={e => { formRef.current.state = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {stateList(formRef.current.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
                             </div>
                             <div className="w-1/3">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="partySupport" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label="Do you have any party support from Vender?"
-                                name="partySupport" 
-                                values={['Yes', 'No']} 
-                                required="Yes/No is required" 
-                            />    
+                                <label>Zip Code</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.zipcode}
+                                    className={`w-full rounded border ${!formRef.current.zipcode ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Year Of Extended Warranty</label>
+                            <label>Created On</label>
                                 <Datetime
-                                    className={`w-full rounded ${!formRef.current.extYear ? 'invalidyear' : ''}`}
+                                    className={`w-full rounded ${!formRef.current.createdOn ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
                                     closeOnSelect={true}
                                     timeFormat={false}
                                     inputProps={inputProps}
-                                    value={formRef.current.extYear ? new Date(formRef.current.extYear) : ''}
-                                    onChange={date => { formRef.current.extYear = date; subRefresh(Date.now()); }}
+                                    value={formRef.current.createdOn ? new Date(formRef.current.createdOn) : ''}
+                                    onChange={date => { formRef.current.createdOn = date; subRefresh(Date.now()); }}
                                 />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Customer ID</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.custId}
+                                    className={`w-full rounded border ${!formRef.current.custId ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.custId = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                            <label>Account Type</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.acType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.acType} onChange={e => { formRef.current.acType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.acType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
+                            <label>Account Status</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.status ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.status} onChange={e => { formRef.current.status = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.status.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
                             </div>
                             <div className="w-1/3 mr-5">
                             
                             </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <label>Year of Party Warrenty</label>
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="acJoin" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                name="acJoin" 
+                                label="Is this account Joined" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Secondary Person</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.secondaryPerson}
+                                    className={`w-full rounded border ${!formRef.current.secondaryPerson ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.secondaryPerson = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            
+                            </div>
+                            <div className="w-1/3">
+                            <label>Relationship</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.relationship ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.relationship} onChange={e => { formRef.current.relationship = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value=""></option>
+                                    {formList.relationship.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            
+                            </div>
+                        </div> 
+                                                
+                        
+                        
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Debit Card Number</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.debitCardNoP}
+                                    className={`w-full rounded border ${!formRef.current.debitCardNoP ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.debitCardNoP = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Expiration Date</label>
                                 <Datetime
-                                    className={`w-full rounded ${!formRef.current.partywarranty ? 'invalidyear' : ''}`}
+                                    className={`w-full rounded ${!formRef.current.expDateP ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
                                     closeOnSelect={true}
                                     timeFormat={false}
                                     inputProps={inputProps}
-                                    value={formRef.current.partywarranty ? new Date(formRef.current.partywarranty) : ''}
-                                    onChange={date => { formRef.current.partywarranty = date; subRefresh(Date.now()); }}
+                                    value={formRef.current.expDateP ? new Date(formRef.current.expDateP) : ''}
+                                    onChange={date => { formRef.current.expDateP = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                            <label>CVV</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.cvvNoP}
+                                    className={`w-full rounded border ${!formRef.current.cvvNoP ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.cvvNoP = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Debit Card Number</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.debitCardNoS}
+                                    className={`w-full rounded border ${!formRef.current.debitCardNoS ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.debitCardNoS = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Expiration Date</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.expDateS ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.expDateS ? new Date(formRef.current.expDateS) : ''}
+                                    onChange={date => { formRef.current.expDateS = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                            <label>CVV</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.cvvNoS}
+                                    className={`w-full rounded border ${!formRef.current.cvvNoS ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.cvvNoS = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center mt-3">
-                            <div className="flex flex-col w-full">
-                                <label>Comments</label>
-                                <textarea
-                                    className={`w-full rounded border ${!formRef.current.houseComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.houseComments}
-                                    onChange={e => { formRef.current.houseComments = e.currentTarget.value; subRefresh(Date.now()); }}
-                                    rows={4}
-                                >
-                                </textarea>
+                            <div className="w-1/3 mr-5">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="creditCard" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                name="creditCard" 
+                                label="Are you paying with Credit Card from the same Bank" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                                      
+                            </div>
+                            <div className="w-1/3">
+                                                       
                             </div>
                         </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                            <label>Credit Card Number</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.accNo}
+                                    className={`w-full rounded border ${!formRef.current.accNo? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.accNo = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label>Routing Number</label>
+                            <input
+                                    type="text"
+                                    value={formRef.current.routingNo}
+                                    className={`w-full rounded border ${!formRef.current.routingNo? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.routingNo = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                            <label>Payment Date</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.paymentdate ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.paymentdate ? new Date(formRef.current.paymentdate) : ''}
+                                    onChange={date => { formRef.current.paymentdate = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+
+                        
                         <div className="flex justify-between items-end mt-3">
                             <div className="flex">
                                 <button
@@ -429,14 +526,14 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
                                     onClick={modalViewClose}
                                     className="border border-gray-400 flex justify-between items-center text-sm px-4 py-1.5 ml-3 cursor-pointer hover:bg-gray-100 hover:border-dodge-d"
                                 >
-                                    <div>{formRef.current.documents.length} document(s) uploded</div>
+                                    <div>{formRef.current.documents.length} document(s) uploaded</div>
                                     <FontAwesomeIcon icon={faSearch} className="ml-2 text-dodge-d" />
                                 </div>
                             </div>
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveHouse}
+                                    onClick={saveCreditcard}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -450,4 +547,4 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
     );
 });
 
-export default HouseForm;
+export default CreditcardForm;

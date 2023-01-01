@@ -7,31 +7,31 @@ import { apiPostCall } from "../../helper/API";
 import ToastMessage from "../../toast";
 import MyLocalStorage from "../../util/mylocalStorage";
 import GeneralPanel from "./general";
-import HousePanel from "./house";
+import CreditcardPanel from "./creditcard";
 
 
 const PropertiesTabs = React.memo(() => {
     const [ui, uiRefresh] = useState(-1);
     const pageData = useRef({ init: false, _id: '' });
     const generalAddedList = useRef([]);
-    const houseAddedList = useRef([]);
+    const creditcardAddedList = useRef([]);
     
     const { tabid } = useParams();
     useEffect(() => {
         (async () => {
-            let search = [{ _modal: 'BankcreditList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'general house' }];
+            let search = [{ _modal: 'BankcreditList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'general creditcard' }];
             const res = await apiPostCall('/api/common/common_search', { _list: search });
             if (res.isError) {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
             } else {
                 if (res && res.length === 0) {
-                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'BankcreditList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), general: [], house: [] } }] });
+                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'BankcreditList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), general: [], creditcard: [] } }] });
                     pageData.current._id = newrecord.upsertedId;
                 } else {
                     pageData.current._id = res._id;
                     generalAddedList.current = res.general || [];
-                    houseAddedList.current = res.house || [];
+                    creditcardAddedList.current = res.creditcard || [];
                     
                     
                 }
@@ -46,7 +46,7 @@ const PropertiesTabs = React.memo(() => {
         <div className="flex px-6 w-full container justify-center mx-auto pb-5">
             <div className="sm:w-full md:w-full xl:w-3/5 mt-20">
                 <Tabs
-                    selectedTabKey={tabid === 'general' ? 0 : tabid === 'house' ? 1 : 0} 
+                    selectedTabKey={tabid === 'general' ? 0 : tabid === 'creditcard' ? 1 : 0} 
                     transformWidth={600}
                     tabClassName="bg-red-100"
                     items={[{
@@ -57,11 +57,11 @@ const PropertiesTabs = React.memo(() => {
                             return <GeneralPanel generalAddedList={generalAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
                         }
                     }, {
-                        title: 'House',
+                        title: 'Creditcard',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
                         getContent: () => {
-                            return <HousePanel  houseAddedList={houseAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
+                            return <CreditcardPanel  creditcardAddedList={creditcardAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
                         }
                     
                     }]} />

@@ -65,7 +65,7 @@ const NavList = {
         sub: [
             { name: 'BankCredit' },
             { icon: <i className="bx bx-briefcase-alt"></i>, name: 'Bankgeneral', path: "/user/bankcredit/general" },
-            { icon: <i className="bx bx-home"></i>, name: 'Creditcard', path: "/user/bankcredit/Creditcard" }
+            { icon: <i className="bx bx-home"></i>, name: 'Creditcard', path: "/user/bankcredit/creditcard" }
             ]
     }, {
         menu: 'Settings',

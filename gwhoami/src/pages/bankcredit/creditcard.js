@@ -5,18 +5,18 @@ import AlertDialog from "../../helper/alertDialog";
 import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
-import HouseForm from "./houseForm";
+import CreditcardForm from "./creditcardForm";
 
-const HousePanel = React.memo(({ houseAddedList, pageData, ui, uiRefresh }) => {
+const CreditcardPanel = React.memo(({ creditcardAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
     const { scrollRef } = useContext(UserContext);
-    const addHouse = () => {
-        let idx = houseAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
+    const addCreditcard = () => {
+        let idx = creditcardAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
         if (idx !== -1) {
-            ToastMessage({ type: 'error', message: 'Please save house details!', timeout: 1000 });
+            ToastMessage({ type: 'error', message: 'Please save Credit Card details!', timeout: 1000 });
             return;
         }
-        houseAddedList.current.push({ ...formList.house, id: nanoid() });
+        creditcardAddedList.current.push({ ...formList.creditcard, id: nanoid() });
         uiRefresh(Date.now());
         setTimeout(() => scrollRef.current.scrollToBottom(), 200);
     }
@@ -24,27 +24,25 @@ const HousePanel = React.memo(({ houseAddedList, pageData, ui, uiRefresh }) => {
     return (
         <div className="w-full">
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
-             <div className="flex w-full">
-                <div className="w-3/4 justify-center">
-                    <h1>Property-House Details</h1>
+             <div className="flex justify-end">
+             <div className="w-3/4 justify-center">
+                    <h1>Bank Credit Card Details</h1>
                 </div>
-                <div className="w-1/4 justify-end">
                 <button
-                    className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-end hover:bg-dodge-b"
-                    onClick={addHouse}
-                ><i className='bx bx-plus mr-1 text-lg'></i> Add Property-House Details</button>
-                </div>
+                    className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-center hover:bg-dodge-b"
+                    onClick={addCreditcard}         
+                ><i className='bx bx-plus mr-1 text-lg'></i> Add Bank Credit Card Details</button>
             </div>
-            {houseAddedList.current.map((item, idx) => (
+            {creditcardAddedList.current.map((item, idx) => (
                 <div className="mt-5" key={item.id}>
-                    <HouseForm
+                    <CreditcardForm
                         form={item}
                         ui={ui}
                         uiRefresh={uiRefresh}
                         alertRef={alertRef}
                         pageData={pageData}
                         recordIndex={idx}
-                        houseAddedList={houseAddedList}
+                        creditcardAddedList={creditcardAddedList}
                     />
                 </div>
             ))}
@@ -52,4 +50,4 @@ const HousePanel = React.memo(({ houseAddedList, pageData, ui, uiRefresh }) => {
     );
 });
 
-export default HousePanel;
+export default CreditcardPanel;
