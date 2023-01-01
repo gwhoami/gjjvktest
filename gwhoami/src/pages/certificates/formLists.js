@@ -68,7 +68,7 @@ export const formList = {
         documents: [],
     },
     houseitemsType: ['LLC'],
-    vehicles: {
+    education: {
         saved: false,
         isSubmit: true,
         personName: '',
@@ -82,5 +82,20 @@ export const formList = {
         educationComments: '',
         documents: [],
     },
+    honorable: {
+        saved: false,
+        isSubmit: true,
+        personName: '',
+        country: '',
+        state: '',
+        zipcode: '',
+        issuedOn: '',
+        expirationOns: '',
+        eligibleRenewal: '',
+        isRecenthonorable: true,
+        honorableComments: '',
+        documents: [],
+    },
     vehiclesType: ['LLC'] 
+
 };
