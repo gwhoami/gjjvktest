@@ -40,6 +40,11 @@ const userPagePath = [
         path: '/Certificates/:tabid',
         component: lazy(()=>import('../pages/certificates/index')),
         exact: true
+    },
+    {
+        path: '/Financial/:tabid',
+        component: lazy(()=>import('../pages/financial/index')),
+        exact: true
     }
     
     

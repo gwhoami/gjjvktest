@@ -79,6 +79,17 @@ const NavList = {
             { icon: <i className="bx bx-award"></i>, name: 'Volunteer/Honorable', path: "/user/certificates/honorable" }
         ]
     }, {
+        menu: 'Financial',
+        icon: <i className="bx bx-landscape"></i>,
+        sub: [
+            { name: 'Financial' },
+            { icon: <i className="bx bxs-user"></i>, name: 'Income', path: "/user/financial/income" },
+            { icon: <i className="bx bx-church"></i>, name: 'Assets', path: "/user/financial/assets" },
+            { icon: <i className="bx bx-fingerprint"></i>, name: 'Liability', path: "/user/financial/liability" },
+            { icon: <i className="bx bxs-graduation"></i>, name: 'Monthly-expense', path: "/user/financial/monthlyexpense" }
+            
+        ]
+    }, {
         menu: 'Settings',
         icon: <i className="bx bx-cog"></i>,
         sub: [
