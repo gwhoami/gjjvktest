@@ -388,13 +388,16 @@ const InsuranceForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                         </div>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Endoresements/Additional Coverage $</label>
+                            <label>Endoresement/Additional Coverage $</label>
                                 <input
                                     type="text"
                                     value={formRef.current.additionalCoverage}
                                     className={`w-full rounded border ${!formRef.current.additionalCoverage ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.additionalCoverage = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            
                             </div>
                             <div className="w-1/3 mr-5">
                             

@@ -5,18 +5,19 @@ import AlertDialog from "../../helper/alertDialog";
 import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
-import IdentityForm from "./identityForm";
+import AssetsForm from "./assetsForm";
+import MyLocalStorage from "../../util/mylocalStorage";
 
-const IdentityPanel = React.memo(({ identityAddedList, pageData, ui, uiRefresh }) => {
+const AssetsPanel = React.memo(({ assetsAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
     const { scrollRef } = useContext(UserContext);
-    const addIdentity = () => {
-        let idx = identityAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
+    const addAssets = () => {
+        let idx = assetsAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
         if (idx !== -1) {
-            ToastMessage({ type: 'error', message: 'Please save Identity details!', timeout: 1000 });
+            ToastMessage({ type: 'error', message: 'Please save Assets details!', timeout: 1000 });
             return;
         }
-        identityAddedList.current.push({ ...formList.identity, id: nanoid() });
+        assetsAddedList.current.push({ ...formList.assets, id: nanoid() });
         uiRefresh(Date.now());
         setTimeout(() => scrollRef.current.scrollToBottom(), 200);
     }
@@ -24,25 +25,25 @@ const IdentityPanel = React.memo(({ identityAddedList, pageData, ui, uiRefresh }
     return (
         <div className="w-full">
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
-             <div className="flex justify-end">
-             <div className="w-3/4 justify-center">
-                    <h1>Identity Details</h1>
+            <div className="flex w-full">
+                <div className="w-3/4 justify-center">
+             <h3 className="text-2xl">Assets Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
                 </div>
                 <button
                     className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-center hover:bg-dodge-b"
-                    onClick={addIdentity}         
-                ><i className='bx bx-plus mr-1 text-lg'></i> Add Identity Details</button>
+                    onClick={addAssets}         
+                ><i className='bx bx-plus mr-1 text-lg'></i> Add Assets Details</button>
             </div>
-            {identityAddedList.current.map((item, idx) => (
+            {assetsAddedList.current.map((item, idx) => (
                 <div className="mt-5" key={item.id}>
-                    <IdentityForm
+                    <AssetsForm
                         form={item}
                         ui={ui}
                         uiRefresh={uiRefresh}
                         alertRef={alertRef}
                         pageData={pageData}
                         recordIndex={idx}
-                        identityAddedList={identityAddedList}
+                        assetsAddedList={assetsAddedList}
                     />
                 </div>
             ))}
@@ -50,4 +51,4 @@ const IdentityPanel = React.memo(({ identityAddedList, pageData, ui, uiRefresh }
     );
 });
 
-export default IdentityPanel;
+export default AssetsPanel;

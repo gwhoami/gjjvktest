@@ -6,6 +6,7 @@ import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
 import VehiclespayForm from "./vehiclepayForm";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 const VehiclespayPanel = React.memo(({ vehiclesAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
@@ -26,8 +27,8 @@ const VehiclespayPanel = React.memo(({ vehiclesAddedList, pageData, ui, uiRefres
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
              <div className="flex w-full">
                 <div className="w-3/4 justify-center">
-                    <h1>Vehicle Insurance Payment Details</h1>
-                </div>
+                <h3 className="text-2xl">Vehicle Insurance Payment Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
+                 </div>
                 <div className="w-1/4 justify-end">
                 <button
                     className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-end hover:bg-dodge-b"

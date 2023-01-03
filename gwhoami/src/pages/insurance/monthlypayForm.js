@@ -286,36 +286,7 @@ const MonthlypayForm = React.memo(({ form, uiRefresh, alertRef, pageData, record
                 ></i>
                 <div className="pt-5 pb-3">
                     <form>
-                        <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/3 mr-5">
-                                <label>First Name</label>
-                                <input
-                                    type="text"
-                                    placeholder="First Name"
-                                    value={formRef.current.firstName}
-                                    className={`w-full rounded border ${!formRef.current.firstName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.firstName = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Last Name</label>
-                                <input
-                                    type="text"
-                                    placeholder="Last Name"
-                                    value={formRef.current.lastName}
-                                    className={`w-full rounded border ${!formRef.current.lastName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.lastName = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3">
-                                <label>Gender</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.genderType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.genderType} onChange={e => { formRef.current.genderType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
-                                    {formList.genderType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
                                 <label>House Type</label>

@@ -42,6 +42,7 @@ export const formList = {
         warrantyYear:'',
         warrantyExpire: '',
         totalCost:'',
+        address1:'',
         house:true,
         extYear:'',
         partywarranty: '',

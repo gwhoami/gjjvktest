@@ -5,19 +5,19 @@ import AlertDialog from "../../helper/alertDialog";
 import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
-import VehiclesForm from "./vehiclesForm";
+import MonthlyexpenseForm from "./monthlyexpenseForm";
 import MyLocalStorage from "../../util/mylocalStorage";
 
-const VehiclesPanel = React.memo(({ vehiclesAddedList, pageData, ui, uiRefresh }) => {
+const MonthlyexpensePanel = React.memo(({ monthlyexpenseAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
     const { scrollRef } = useContext(UserContext);
-    const addVehicles = () => {
-        let idx = vehiclesAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
+    const addMonthlyexpense = () => {
+        let idx = monthlyexpenseAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
         if (idx !== -1) {
-            ToastMessage({ type: 'error', message: 'Please save vehicles details!', timeout: 1000 });
+            ToastMessage({ type: 'error', message: 'Please save monthlyexpense details!', timeout: 1000 });
             return;
         }
-        vehiclesAddedList.current.push({ ...formList.vehicles, id: nanoid() });
+        monthlyexpenseAddedList.current.push({ ...formList.monthlyexpense, id: nanoid() });
         uiRefresh(Date.now());
         setTimeout(() => scrollRef.current.scrollToBottom(), 200);
     }
@@ -27,26 +27,23 @@ const VehiclesPanel = React.memo(({ vehiclesAddedList, pageData, ui, uiRefresh }
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
             <div className="flex w-full">
                 <div className="w-3/4 justify-center">
-                <h3 className="text-2xl">Vehicles Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
-                
-                </div>
-                <div className="w-1/4 justify-end">
+             <h3 className="text-2xl">Monthly Expense Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
+               </div>
                 <button
-                    className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-end hover:bg-dodge-b"
-                    onClick={addVehicles}
-                ><i className='bx bx-plus mr-1 text-lg'></i> Add Vehicles Details</button>
-                </div>
+                    className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-center hover:bg-dodge-b"
+                    onClick={addMonthlyexpense}         
+                ><i className='bx bx-plus mr-1 text-lg'></i> Add Monthly Expense Details</button>
             </div>
-            {vehiclesAddedList.current.map((item, idx) => (
+            {monthlyexpenseAddedList.current.map((item, idx) => (
                 <div className="mt-5" key={item.id}>
-                    <VehiclesForm
+                    <MonthlyexpenseForm
                         form={item}
                         ui={ui}
                         uiRefresh={uiRefresh}
                         alertRef={alertRef}
                         pageData={pageData}
                         recordIndex={idx}
-                        vehiclesAddedList={vehiclesAddedList}
+                        monthlyexpenseAddedList={monthlyexpenseAddedList}
                     />
                 </div>
             ))}
@@ -54,4 +51,4 @@ const VehiclesPanel = React.memo(({ vehiclesAddedList, pageData, ui, uiRefresh }
     );
 });
 
-export default VehiclesPanel;
+export default MonthlyexpensePanel;

@@ -341,7 +341,7 @@ const SurgeryForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                     onChange={e => { formRef.current.insureCovered = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            <div className="w-1/3">
+                            <div className="w-1/3 mr-5">
                             <label>Doctor Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>

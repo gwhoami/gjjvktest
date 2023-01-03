@@ -45,6 +45,7 @@ export const formList = {
         zipcode: '',
         lastDose: '',
         doseName:'',
+        nextDose:'',
         immuneDose:true,
         age:'',
         isRecentImmune: true,
@@ -118,23 +119,8 @@ export const formList = {
         documents: [],
     },
     medicationType: ['Flu' , 'Cold'],
-    refill:['Yes' , 'No'],
-    college: {
-        collegeName: '',
-        saved: false,
-        isSubmit: true,
-        blood:'',
-        year:'',
-        place:'',
-        country:'',
-        state:'',
-        zipcode:'',
-        documents: []
-        
-
-        // majors: [
-        //     {major: '', year: '', place: '', country: '', state: '', zipcode: ''}
-        // ]
-    },
-    collegeMenu: ['Computer Science', 'Communications', 'Government/Political Science', 'Biology']
+    refill:['Yes' , 'No']
+    
+    
+    
 };

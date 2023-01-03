@@ -6,6 +6,7 @@ import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
 import ImmuneForm from "./immuneForm";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 const ImmunePanel = React.memo(({ immuneAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
@@ -26,7 +27,7 @@ const ImmunePanel = React.memo(({ immuneAddedList, pageData, ui, uiRefresh }) =>
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
              <div className="flex w-full">
                 <div className="w-3/4 justify-center">
-                    <h1>Immunization / Covid / Polio Details</h1>
+                    <h3 className="text-2xl">Immunization / Covid / Polio Details {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
                 </div>
                 <div className="w-1/4 justify-end">
                 <button

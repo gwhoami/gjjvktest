@@ -5,7 +5,7 @@ const financialSchema = new mongoose.Schema({
     income: [mongoose.Schema.Types.Mixed],
     assets: [mongoose.Schema.Types.Mixed],
     liability: [mongoose.Schema.Types.Mixed],
-    monthlyexpense: [mongoose.Schema.Types.Mixed],    
+    monthlyexpense: [mongoose.Schema.Types.Mixed]
 }, {autoCreate: true});
 
 module.exports = {

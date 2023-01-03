@@ -9,11 +9,11 @@ import { ButtonLoader } from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
-import { formList } from "./formLists";
+//import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
 
-const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, identityAddedList }) => {
+const AssetsForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, assetsAddedList }) => {
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -39,7 +39,7 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
     }
 
     const completeHandler = (event) => {
-        identityAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        assetsAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -66,7 +66,7 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveIdentity = () => {
+    const saveAssets = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -77,8 +77,8 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'CertificateList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'identity': arr } } }] :
-            [{ _modal: 'CertificateList', _condition: 'update', _find: { _id: pageData.current._id, 'identity.id': arr.id }, _data: { $set: { "identity.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'FinancialList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'assets': arr } } }] :
+            [{ _modal: 'FinancialList', _condition: 'update', _find: { _id: pageData.current._id, 'assets.id': arr.id }, _data: { $set: { "assets.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -86,19 +86,19 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
                 return;
             } else {
                 arr.isSubmit = true;
-                let newlist = [...identityAddedList.current];
+                let newlist = [...assetsAddedList.current];
                 newlist[recordIndex] = arr;
-                identityAddedList.current = newlist;
+                assetsAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Identity Details are added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'Assets Details are added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the Identity details and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the Certificate details and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -167,24 +167,24 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
     const removeFile = (itm, idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            identityAddedList.current[recordIndex].documents.splice(idx, 1);
+            assetsAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeIdentity = () => {
-        if (identityAddedList.current[recordIndex].saved === false) {
+    const removeAssets = () => {
+        if (assetsAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                identityAddedList.current.splice(recordIndex, 1);
+                assetsAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Identity Details?');
+            }, 'Confirm?', 'Are you sure to delete this Certificate Details?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'CertificateList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'identity': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'FinancialList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'assets': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                identityAddedList.current.splice(recordIndex, 1);
+                assetsAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Certificate details?');
         }
@@ -253,35 +253,119 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
                     className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeIdentity}
+                    onClick={removeAssets}
                 ></i>
                 <div className="pt-5 pb-3">
                     <form>
                     <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                                <label>Name of the Certificate</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.certificateName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.certificateName} onChange={e => { formRef.current.certificateName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.certificateName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Name Of the Person</label>
+                                <label>Cash equivalents $</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.personName}
-                                    className={`w-full rounded border ${!formRef.current.personName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.personName = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.cashEqual}
+                                    className={`w-full rounded border ${!formRef.current.cashEqual ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.cashEqual = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Cash</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.profitIncome}
+                                    className={`w-full rounded border ${!formRef.current.profitIncome? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.profitIncome = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                             <div className="w-1/3">
-                                <label>Name of the Organization</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.orgName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.orgName} onChange={e => { formRef.current.orgName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.orgName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
+                                <label>Inventory</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.inventory}
+                                    className={`w-full rounded border ${!formRef.current.inventory ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.inventory = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                                <label>Investments $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.investments}
+                                    className={`w-full rounded border ${!formRef.current.investments ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.investments = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Property / Plant / Equipments</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.plantAssets}
+                                    className={`w-full rounded border ${!formRef.current.plantAssets ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.plantAssets = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label>VehiclesAssets</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.vehiclesAssets}
+                                    className={`w-full rounded border ${!formRef.current.vehiclesAssets ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.vehiclesAssets = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                                <label>Furniture</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.furnitureAssets}
+                                    className={`w-full rounded border ${!formRef.current.furnitureAssets ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.furnitureAssets = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Year</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.assetsyear ? 'invalidyear' : ''}`}
+                                    placeholder="YYYY"
+                                    dateFormat="YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.assetsyear ? new Date(formRef.current.assetsyear) : ''}
+                                    onChange={date => { formRef.current.assetsyear = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label>Other / Parents $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.otherAssets}
+                                    className={`w-full rounded border ${!formRef.current.otherAssets ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.otherAssets = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="optAssetsyear" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                name="optAssetsyear" 
+                                label="Is this all Assets from Current Year?" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            
+                            </div>
+                            <div className="w-1/3">
+                            
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center mt-3">
@@ -311,107 +395,26 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
                                     onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                        </div>
+                        </div>   
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Certificate issued date</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.issuedOn ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.issuedOn ? new Date(formRef.current.issuedOn) : ''}
-                                    onChange={date => { formRef.current.issuedOn = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Certificate Expiration Date</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.expirationOn ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.expirationOn ? new Date(formRef.current.expirationOn) : ''}
-                                    onChange={date => { formRef.current.expirationOn = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3">
-                            <label>Certificate Status</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.certifStatus ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.certifStatus} onChange={e => { formRef.current.certifStatus = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.certifStatus.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="optRenewal" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                name="optRenewal" 
-                                label="Is this certificate renewal required?" 
-                                values={['Yes', 'No']} 
-                                required="Yes/No is required" 
-                            />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            
-                            </div>
-                            <div className="w-1/3">
-                            
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/3 mr-5">
-                            <label>Eligible renewal</label>
+                                <label>Name</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.eligibleRenewal}
-                                    className={`w-full rounded border ${!formRef.current.eligibleRenewal ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.eligibleRenewal = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.nameAssets}
+                                    className={`w-full rounded border ${!formRef.current.nameAssets ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.nameAssets = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Notification Type</label>
-                            <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.eligibleType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.eligibleType} onChange={e => { formRef.current.eligibleType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.eligibleType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3">
-                            <label>Phone / Email </label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.phoneMail}
-                                    className={`w-full rounded border ${!formRef.current.phoneMail ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.phoneMail = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                        <h4>.   Personal Certificates(Birth,marriage, Adhar,SSN)<br></br>
-                            .   Religious Certificates(All the Sacraments)<br></br>
-                            .   Identity Certificates(Licences, Passports)<br></br>
-                            .   Education Certificates<br></br>
-                            .   Volunteering / Honorable Certificates<br></br>
-                        </h4>
-                        </div>
+                            </div>  
+                            </div>                                                          
 
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="flex flex-col w-full">
                                 <label>Comments</label>
                                 <textarea
-                                    className={`w-full rounded border ${!formRef.current.identityComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.identityComments}
-                                    onChange={e => { formRef.current.identityComments = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    className={`w-full rounded border ${!formRef.current.AssetsComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    value={formRef.current.AssetsComments}
+                                    onChange={e => { formRef.current.AssetsComments = e.currentTarget.value; subRefresh(Date.now()); }}
                                     rows={4}
                                 >
                                 </textarea>
@@ -436,7 +439,7 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveIdentity}
+                                    onClick={saveAssets}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -450,4 +453,4 @@ const IdentityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIn
     );
 });
 
-export default IdentityForm;
+export default AssetsForm;

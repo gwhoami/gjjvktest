@@ -263,7 +263,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <label>Name of the Immunization</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.immuneName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.immuneName} onChange={e => { formRef.current.immuneName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
+                                    <option value="">-- Select --</option>
                                     {formList.immuneName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -271,7 +271,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <label>Hospital Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="">--Select--</option>
+                                    <option value="">-- Select --</option>
                                     {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
@@ -375,6 +375,19 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                 values={['Yes', 'No']} 
                                 required="Do you have 2nd Dose? is required" 
                             />    
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            <label> Next Dose on</label>
+                            <Datetime
+                                    className={`w-full rounded ${!formRef.current.nextDose ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.nextDose ? new Date(formRef.current.nextDose) : ''}
+                                    onChange={date => { formRef.current.nextDose = date; subRefresh(Date.now()); }}
+                                />  
                             </div>
                         </div>
                         

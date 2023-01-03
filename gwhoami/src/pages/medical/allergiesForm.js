@@ -10,6 +10,7 @@ import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
+import MyLocalStorage from "../../util/mylocalStorage";
 // import { UserContext } from "../../util/maincontext";
 
 const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, allergiAddedList }) => {
@@ -328,22 +329,21 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <label>Blood Group</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="" readOnly={true}></option>
                                     {formList.bloodGroup.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
                             <div className="w-1/3">
                             <label>Date of birth</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
+
+                            <input
+                                    type="text"
+                                    value={MyLocalStorage.getLoginInfo().dob}
+                                    readOnly={true}
                                     dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.from ? new Date(formRef.current.from) : ''}
-                                    onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
+                                    className={`w-full rounded `}
                                 />
+                               
                             </div>
                         </div>
 

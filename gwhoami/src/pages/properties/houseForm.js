@@ -252,12 +252,13 @@ const HouseForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
                     <form>
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>House Address</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.houseAddress ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.houseAddress} onChange={e => { formRef.current.houseAddress = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.houseAddress.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
+                            <label>Address 1</label>
+                                <input
+                                    type="text"
+                                    value={houseAddedList.address1}
+                                    className={`w-full rounded border ${!formRef.current.address1 ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.address1 = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                             </div>
                             <div className="w-1/3 mr-5">
                             <label>House Items</label>

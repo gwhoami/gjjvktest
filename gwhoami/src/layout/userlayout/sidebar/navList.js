@@ -59,17 +59,10 @@ const NavList = {
             { icon: <i className="bx bxs-door-open"></i>, name: 'HouseHold-Items', path: "/user/properties/houseitems" },
             { icon: <i className="bx bx-car"></i>, name: 'Property-Vehicle', path: "/user/properties/vehicles" }
         ]
-    }, {
-        menu: 'Bankcredit',
-        icon: <i className="bx bx-money-withdraw"></i>,
-        sub: [
-            { name: 'BankCredit' },
-            { icon: <i className="bx bxs-bank"></i>, name: 'Bankgeneral', path: "/user/bankcredit/general" },
-            { icon: <i className="bx bxs-credit-card-front"></i>, name: 'Creditcard', path: "/user/bankcredit/creditcard" }
-        ]
+    
     }, {
         menu: 'Certificates',
-        icon: <i className="bx bx-landscape"></i>,
+        icon: <i className="bx bx-certification"></i>,
         sub: [
             { name: 'Certificates' },
             { icon: <i className="bx bxs-user"></i>, name: 'Personal', path: "/user/certificates/personal" },
@@ -86,8 +79,16 @@ const NavList = {
             { icon: <i className="bx bxs-user"></i>, name: 'Income', path: "/user/financial/income" },
             { icon: <i className="bx bx-church"></i>, name: 'Assets', path: "/user/financial/assets" },
             { icon: <i className="bx bx-fingerprint"></i>, name: 'Liability', path: "/user/financial/liability" },
-            { icon: <i className="bx bxs-graduation"></i>, name: 'Monthly-expense', path: "/user/financial/monthlyexpense" }
+            { icon: <i className="bx bxs-graduation"></i>, name: 'Monthly-Expense', path: "/user/financial/monthlyexpense" }
             
+        ]
+    }, {
+        menu: 'Bankcredit',
+        icon: <i className="bx bx-money-withdraw"></i>,
+        sub: [
+            { name: 'BankCredit' },
+            { icon: <i className="bx bxs-bank"></i>, name: 'Bankgeneral', path: "/user/bankcredit/general" },
+            { icon: <i className="bx bxs-credit-card-front"></i>, name: 'Creditcard', path: "/user/bankcredit/creditcard" }
         ]
     }, {
         menu: 'Settings',

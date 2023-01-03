@@ -6,6 +6,7 @@ import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
 import IncomeForm from "./incomeForm";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 const IncomePanel = React.memo(({ incomeAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
@@ -24,9 +25,9 @@ const IncomePanel = React.memo(({ incomeAddedList, pageData, ui, uiRefresh }) =>
     return (
         <div className="w-full">
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
-             <div className="flex justify-end">
-             <div className="w-3/4 justify-center">
-                    <h1>Income Details</h1>
+            <div className="flex w-full">
+                <div className="w-3/4 justify-center">
+             <h3 className="text-2xl">Income Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
                 </div>
                 <button
                     className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-center hover:bg-dodge-b"

@@ -6,6 +6,7 @@ import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
 import HouseitemsForm from "./houseitemsForm";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 const HouseitemsPanel = React.memo(({ houseitemsAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
@@ -26,7 +27,7 @@ const HouseitemsPanel = React.memo(({ houseitemsAddedList, pageData, ui, uiRefre
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
              <div className="flex w-full">
                 <div className="w-3/4 justify-center">
-                    <h1>HouseHold Items Details</h1>
+                    <h3 className="text-2xl">HouseHold Items Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
                 </div>
                 <div className="w-1/4 justify-end">
                 <button

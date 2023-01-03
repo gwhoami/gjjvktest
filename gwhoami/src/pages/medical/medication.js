@@ -6,6 +6,7 @@ import ToastMessage from "../../toast";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
 import MedicationForm from "./medicationForm.js";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 const MedicationPanel = React.memo(({ medicationAddedList, pageData, ui, uiRefresh }) => {
     const alertRef = useRef();
@@ -26,8 +27,8 @@ const MedicationPanel = React.memo(({ medicationAddedList, pageData, ui, uiRefre
             <AlertDialog ref={alertRef} title={"Confirm to Delete?"} />
             <div className="flex w-full">
                 <div className="w-3/4 justify-center">
-                        <h1>Medical Details</h1>
-                    </div>
+                   <h3 className="text-2xl">Medical Details Of {MyLocalStorage.getLoginInfo().firstName} {MyLocalStorage.getLoginInfo().lastName}</h3>
+                </div>
                 <div className="flex justify-end">
                     <button
                         className="bg-dodge-d px-3 py-1.5 text-white text-sm shadow-md flex items-center hover:bg-dodge-b"

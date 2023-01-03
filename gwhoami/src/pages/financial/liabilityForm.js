@@ -9,11 +9,11 @@ import { ButtonLoader } from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
-import { formList } from "./formLists";
+//import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
 
-const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, religiousAddedList }) => {
+const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, liabilityAddedList }) => {
     const [ui] = useState(-1);
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
@@ -39,7 +39,7 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     }
 
     const completeHandler = (event) => {
-        religiousAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        liabilityAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -66,7 +66,7 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveReligious = () => {
+    const saveLiability = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -77,8 +77,8 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'CertificateList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'religious': arr } } }] :
-            [{ _modal: 'CertificateList', _condition: 'update', _find: { _id: pageData.current._id, 'religious.id': arr.id }, _data: { $set: { "religious.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'FinancialList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'liability': arr } } }] :
+            [{ _modal: 'FinancialList', _condition: 'update', _find: { _id: pageData.current._id, 'liability.id': arr.id }, _data: { $set: { "liability.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -86,19 +86,19 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                 return;
             } else {
                 arr.isSubmit = true;
-                let newlist = [...religiousAddedList.current];
+                let newlist = [...liabilityAddedList.current];
                 newlist[recordIndex] = arr;
-                religiousAddedList.current = newlist;
+                liabilityAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Certificate Details are added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'Liability Details are added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the Certificate details and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the Liability details and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -167,26 +167,26 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     const removeFile = (itm, idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            religiousAddedList.current[recordIndex].documents.splice(idx, 1);
+            liabilityAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeReligious = () => {
-        if (religiousAddedList.current[recordIndex].saved === false) {
+    const removeLiability = () => {
+        if (liabilityAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                religiousAddedList.current.splice(recordIndex, 1);
+                liabilityAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Certificate Details?');
+            }, 'Confirm?', 'Are you sure to delete this Liability Details?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'CertificateList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'religious': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'FinancialList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'liability': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                religiousAddedList.current.splice(recordIndex, 1);
+                liabilityAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Certificate details?');
+            }, 'Confirm?', 'Are you sure to delete this Liability details?');
         }
     }
     return (
@@ -253,35 +253,148 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
                     className='bx bx-x absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeReligious}
+                    onClick={removeLiability}
                 ></i>
                 <div className="pt-5 pb-3">
                     <form>
                     <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                                <label>Name of the Certificate</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.certificateName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.certificateName} onChange={e => { formRef.current.certificateName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.certificateName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Name Of the Person</label>
+                                <label>Account Payable $</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.personName}
-                                    className={`w-full rounded border ${!formRef.current.personName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.personName = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.accountPayable}
+                                    className={`w-full rounded border ${!formRef.current.accountPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.accountPayable = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Liability</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.liability}
+                                    className={`w-full rounded border ${!formRef.current.liability? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.liability = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                             <div className="w-1/3">
-                                <label>Name of the Organization</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.orgName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.orgName} onChange={e => { formRef.current.orgName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.orgName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
+                                <label>Short Term Loans $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.shortLoan}
+                                    className={`w-full rounded border ${!formRef.current.shortLoan ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.shortLoan = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                                <label>Taxes payable $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.taxesPayable}
+                                    className={`w-full rounded border ${!formRef.current.taxesPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.taxesPayable = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Account Expenses $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.accountExpenses}
+                                    className={`w-full rounded border ${!formRef.current.accountExpenses? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.accountExpenses = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label>Unearned Expense</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.unearnedExpense}
+                                    className={`w-full rounded border ${!formRef.current.unearnedExpense ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.unearnedExpense = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                                <label>Notes Payable</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.notesPayable}
+                                    className={`w-full rounded border ${!formRef.current.notesPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.notesPayable = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Mortgage Payable $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.mortgagePayable}
+                                    className={`w-full rounded border ${!formRef.current.mortgagePayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.mortgagePayable = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label>Bonds Payable</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.bondsPayable}
+                                    className={`w-full rounded border ${!formRef.current.bondsPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.bondsPayable = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/3 mr-5">
+                                <label>Deferred Tax Liability</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.taxLiability}
+                                    className={`w-full rounded border ${!formRef.current.taxLiability ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.taxLiability = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Liability Year</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.liabilityYear ? 'invalidyear' : ''}`}
+                                    placeholder="YYYY"
+                                    dateFormat="YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.liabilityYear ? new Date(formRef.current.liabilityYear) : ''}
+                                    onChange={date => { formRef.current.liabilityYear = date; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label>Other Liability</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.otherliability}
+                                    className={`w-full rounded border ${!formRef.current.otherliability ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.otherliability = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
+                            <InputRadio 
+                                styleClass="flex flex-col mb-3" 
+                                formKey="optLiabilyyear" 
+                                formRef={regRef} 
+                                ui={ui} 
+                                name="optLiabilyyear" 
+                                label="Is this all Liability from Current Year?" 
+                                values={['Yes', 'No']} 
+                                required="Yes/No is required" 
+                            />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                            
+                            </div>
+                            <div className="w-1/3">
+                            
                             </div>
                         </div>
                         <div className="flex w-full justify-start items-center mt-3">
@@ -311,107 +424,26 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                     onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                        </div>
+                        </div>   
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                            <label>Certificate issued date</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.issuedOn ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.issuedOn ? new Date(formRef.current.issuedOn) : ''}
-                                    onChange={date => { formRef.current.issuedOn = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Certificate Expiration Date</label>
-                                <Datetime
-                                    className={`w-full rounded ${!formRef.current.expirationOn ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.expirationOn ? new Date(formRef.current.expirationOn) : ''}
-                                    onChange={date => { formRef.current.expirationOn = date; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3">
-                            <label>Certificate Status</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.certifStatus ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.certifStatus} onChange={e => { formRef.current.certifStatus = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.certifStatus.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="optRenewal" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                name="optRenewal" 
-                                label="Is this certificate renewal required?" 
-                                values={['Yes', 'No']} 
-                                required="Yes/No is required" 
-                            />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            
-                            </div>
-                            <div className="w-1/3">
-                            
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center relative">
-                            <div className="w-1/3 mr-5">
-                            <label>Eligible renewal</label>
+                                <label>Name</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.eligibleRenewal}
-                                    className={`w-full rounded border ${!formRef.current.eligibleRenewal ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.eligibleRenewal = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.nameIncome}
+                                    className={`w-full rounded border ${!formRef.current.nameIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.nameIncome = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                            <label>Notification Type</label>
-                            <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.eligibleType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.eligibleType} onChange={e => { formRef.current.eligibleType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.eligibleType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3">
-                            <label>Phone / Email </label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.phoneMail}
-                                    className={`w-full rounded border ${!formRef.current.phoneMail ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.phoneMail = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex w-full justify-start items-center mt-3">
-                        <h4>.   Personal Certificates(Birth,marriage, Adhar,SSN)<br></br>
-                            .   Religious Certificates(All the Sacraments)<br></br>
-                            .   Identity Certificates(Licences, Passports)<br></br>
-                            .   Education Certificates<br></br>
-                            .   Volunteering / Honorable Certificates<br></br>
-                        </h4>
-                        </div>
+                            </div>  
+                            </div>                                                          
 
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="flex flex-col w-full">
                                 <label>Comments</label>
                                 <textarea
-                                    className={`w-full rounded border ${!formRef.current.religiousComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.religiousComments}
-                                    onChange={e => { formRef.current.religiousComments = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    className={`w-full rounded border ${!formRef.current.incomeComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    value={formRef.current.incomeComments}
+                                    onChange={e => { formRef.current.incomeComments = e.currentTarget.value; subRefresh(Date.now()); }}
                                     rows={4}
                                 >
                                 </textarea>
@@ -436,7 +468,7 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveReligious}
+                                    onClick={saveLiability}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -450,4 +482,4 @@ const ReligiousForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     );
 });
 
-export default ReligiousForm;
+export default LiabilityForm;
