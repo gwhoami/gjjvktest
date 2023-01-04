@@ -8,19 +8,19 @@ import { formList } from "./formLists";
 import RegularForm from "./regularForm";
 import MyLocalStorage from "../../util/mylocalStorage";
 
-const RegularPanel = React.memo(({ collegeAddedList, pageData, ui, uiRefresh, regularMenus }) =>
+const RegularPanel = React.memo(({ regularAddedList, pageData, ui, uiRefresh, regularMenus }) =>
 {
     const alertRef = useRef();
     const { scrollRef } = useContext(UserContext);
     const addRegular = () =>
     {
-        let idx = collegeAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
+        let idx = regularAddedList.current.findIndex(rec => typeof rec.saved !== 'undefined');
         if (idx !== -1)
         {
-            ToastMessage({ type: 'error', message: 'Please save the college!', timeout: 1000 });
+            ToastMessage({ type: 'error', message: 'Please save the regular!', timeout: 1000 });
             return;
         }
-        collegeAddedList.current.push({ ...formList.regular, id: nanoid() });
+        regularAddedList.current.push({ ...formList.regular, id: nanoid() });
         uiRefresh(Date.now());
         setTimeout(() => scrollRef.current.scrollToBottom(), 200);
     }
@@ -35,7 +35,7 @@ const RegularPanel = React.memo(({ collegeAddedList, pageData, ui, uiRefresh, re
                     onClick={addRegular}
                 ><i className='bx bx-plus mr-1 text-lg'></i> Add General Medical Details</button>
             </div>
-            {collegeAddedList.current.map((item, idx) => (
+            {regularAddedList.current.map((item, idx) => (
                 <div className="mt-5" key={item.id}>
                     <RegularForm
                         form={item}
@@ -45,7 +45,7 @@ const RegularPanel = React.memo(({ collegeAddedList, pageData, ui, uiRefresh, re
                         alertRef={alertRef}
                         pageData={pageData}
                         recordIndex={idx}
-                        collegeAddedList={collegeAddedList}
+                        regularAddedList={regularAddedList}
                     />
                 </div>
             ))}

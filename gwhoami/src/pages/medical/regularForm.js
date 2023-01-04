@@ -15,10 +15,10 @@ import { formList } from "./formLists";
 import { InputDOB } from "../../component/forms";
 
 
-const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, pageData, recordIndex, collegeAddedList }) =>
+const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageData, recordIndex, regularAddedList }) =>
 {
     const [ui] = useState(-1);
-   
+
     const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
     const currentDom = useRef();
@@ -45,7 +45,7 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
 
     const completeHandler = (event) =>
     {
-        collegeAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        regularAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -125,7 +125,7 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
             let deleteid = formRef.current.bloods[idx].id;
             formRef.current.bloods.splice(idx, 1);
             let sm = [...formList.regularMenu];
-            collegeAddedList.current.map(s => s.bloods.map(c => c.blood)).map(arr => arr.forEach(itm =>
+            regularAddedList.current.map(s => s.bloods.map(c => c.blood)).map(arr => arr.forEach(itm =>
             {
                 sm.splice(sm.indexOf(itm), 1);
             }));
@@ -160,9 +160,9 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
             } else
             {
                 arr.isSubmit = true;
-                let newlist = [...collegeAddedList.current];
+                let newlist = [...regularAddedList.current];
                 newlist[recordIndex] = arr;
-                collegeAddedList.current = newlist;
+                regularAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
@@ -254,19 +254,19 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
         alertRef.current.showConfirm((res) =>
         {
             if (res === 'no') return;
-            collegeAddedList.current[recordIndex].documents.splice(idx, 1);
+            regularAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
     const removeRegular = () =>
     {
-        if (collegeAddedList.current[recordIndex].saved === false)
+        if (regularAddedList.current[recordIndex].saved === false)
         {
             alertRef.current.showConfirm((res) =>
             {
                 if (res === 'no') return;
-                collegeAddedList.current.splice(recordIndex, 1);
+                regularAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Details?');
         } else
@@ -276,7 +276,7 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
                 if (res === 'no') return;
                 let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'regular': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                collegeAddedList.current.splice(recordIndex, 1);
+                regularAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Details?');
         }
@@ -391,7 +391,7 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
                                     value={formRef.current.dob ? new Date(formRef.current.dob) : ''}
                                     onChange={date => { formRef.current.dob = date; subRefresh(Date.now()); }}
                                 />
-                                
+
                             </div>
                         </div>
 
@@ -407,11 +407,11 @@ const RegularForm = React.memo(({ form,  uiRefresh, regularMenus, alertRef, page
 
                                         <div className="w-1/3 mr-5">
                                             <label>Blood Group</label>
-                                            <input type="text" 
-                                                  value={itm.regularMenus} 
-                                                  className="w-full rounded" 
-                                                  placeholder="Blood Group"
-                                                  onChange={null} readOnly={true} 
+                                            <input type="text"
+                                                value={itm.regularMenus}
+                                                className="w-full rounded"
+                                                placeholder="Blood Group"
+                                                onChange={null} readOnly={true}
                                             />
                                         </div>
                                         <div className="w-1/3 mr-5">

@@ -285,16 +285,129 @@ const MonthlyexpenseForm = React.memo(({ form, uiRefresh, alertRef, pageData, re
                                     onChange={e => { formRef.current.interestIncome = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
-                            <div className="w-1/4">
-                                <label>Interest Income</label>
+                            <div className="w-1/4 mr-5">
+                                <label>Transport $</label>
                                 <input
                                     type="text"
-                                    value={formRef.current.interestIncome}
-                                    className={`w-full rounded border ${!formRef.current.interestIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.interestIncome = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={formRef.current.transport}
+                                    className={`w-full rounded border ${!formRef.current.transport ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.transport = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Auto Ma $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.automa}
+                                    className={`w-full rounded border ${!formRef.current.automa ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.automa = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/4 mr-5">
+                                <label>Car Reg $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.carReg}
+                                    className={`w-full rounded border ${!formRef.current.carReg ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.carReg = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Car Ins $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.carIns}
+                                    className={`w-full rounded border ${!formRef.current.carIns ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.carIns = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Home Ma $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.homeMa}
+                                    className={`w-full rounded border ${!formRef.current.homeMa ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.homeMa = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>home Ins $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.homeIns}
+                                    className={`w-full rounded border ${!formRef.current.homeIns ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.HomeIns = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Health Care $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.healthCare}
+                                    className={`w-full rounded border ${!formRef.current.healthCare ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.healthCare = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                            <div className="w-1/4 mr-5">
+                                <label>Clothing $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.clothing}
+                                    className={`w-full rounded border ${!formRef.current.clothing ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.clothing = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Gifts $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.gifts}
+                                    className={`w-full rounded border ${!formRef.current.gifts ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.gifts = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Chaitable $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.charitable}
+                                    className={`w-full rounded border ${!formRef.current.charitable ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.charitable = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>home Ins $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.homeIns}
+                                    className={`w-full rounded border ${!formRef.current.homeIns ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.HomeIns = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/4 mr-5">
+                                <label>Health Care $</label>
+                                <input
+                                    type="text"
+                                    value={formRef.current.healthCare}
+                                    className={`w-full rounded border ${!formRef.current.healthCare ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.healthCare = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
                                 <label>Divided Income</label>

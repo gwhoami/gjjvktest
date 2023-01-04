@@ -14,7 +14,8 @@ import SurgeryPanel from "./surgery";
 import MedicationPanel from "./medication";
 import { formList } from "./formLists";
 
-const MedicalTabs = React.memo(() => {
+const MedicalTabs = React.memo(() =>
+{
     const [ui, uiRefresh] = useState(-1);
     const pageData = useRef({ init: false, _id: '' });
     const regularAddedList = useRef([]);
@@ -23,22 +24,27 @@ const MedicalTabs = React.memo(() => {
     const healthinfoAddedList = useRef([]);
     const surgeryAddedList = useRef([]);
     const medicationAddedList = useRef([]);
-    const collegeAddedList = useRef([]);
     const regularMenus = useRef([]);
 
     const { tabid } = useParams();
-    useEffect(() => {
-        (async () => {
-            let search = [{ _modal: 'MedicalList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'regular immune allergi healthinfo surgery medication college' }];
+    useEffect(() =>
+    {
+        (async () =>
+        {
+            let search = [{ _modal: 'MedicalList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'regular immune allergi healthinfo surgery medication' }];
             const res = await apiPostCall('/api/common/common_search', { _list: search });
-            if (res.isError) {
+            if (res.isError)
+            {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
-            } else {
-                if (res && res.length === 0) {
-                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'MedicalList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), regular: [], immune: [], allergi: [], healthinfo: [], surgery: [], medication: [], college: [] } }] });
+            } else
+            {
+                if (res && res.length === 0)
+                {
+                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'MedicalList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), regular: [], immune: [], allergi: [], healthinfo: [], surgery: [], medication: [] } }] });
                     pageData.current._id = newrecord.upsertedId;
-                } else {
+                } else
+                {
                     pageData.current._id = res._id;
                     regularAddedList.current = res.regular || [];
                     immuneAddedList.current = res.immune || [];
@@ -46,10 +52,10 @@ const MedicalTabs = React.memo(() => {
                     healthinfoAddedList.current = res.healthinfo || [];
                     surgeryAddedList.current = res.surgery || [];
                     medicationAddedList.current = res.medication || [];
-                    collegeAddedList.current = res.colleges || [];
-                   
+
                     let cm = [...formList.regularMenu];
-                    collegeAddedList.current.map(s => s.bloods.map(c => c.blood)).map(arr => arr.forEach(itm => {
+                    regularAddedList.current.map(s => s.bloods.map(c => c.blood)).map(arr => arr.forEach(itm =>
+                    {
                         cm.splice(cm.indexOf(itm), 1);
                     }));
                     regularMenus.current = [...cm];
@@ -67,53 +73,59 @@ const MedicalTabs = React.memo(() => {
         <div className="flex px-6 w-full container justify-center mx-auto pb-5">
             <div className="sm:w-full md:w-full xl:w-3/5 mt-20">
                 <Tabs
-                    selectedTabKey={tabid === 'regular' ? 0 : tabid === 'immune' ? 1 : tabid === 'allergi' ? 2 :  tabid === 'healthinfo' ? 3 : tabid === 'surgery' ? 4 :  tabid === 'medication' ? 5 :  tabid === 'college' ? 6 : 0}
+                    selectedTabKey={tabid === 'regular' ? 0 : tabid === 'immune' ? 1 : tabid === 'allergi' ? 2 : tabid === 'healthinfo' ? 3 : tabid === 'surgery' ? 4 : tabid === 'medication' ? 5 : 0}
                     transformWidth={600}
                     tabClassName="bg-red-100"
                     items={[{
                         title: 'Regular',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
-                        getContent: () => {
-                            return <RegularPanel collegeAddedList={collegeAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} regularMenus={regularMenus} />
+                        getContent: () =>
+                        {
+                            return <RegularPanel regularAddedList={regularAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} regularMenus={regularMenus} />
                         }
                     }, {
                         title: 'Immunization',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
-                        getContent: () => {
+                        getContent: () =>
+                        {
                             return <ImmunePanel immuneAddedList={immuneAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
                         }
                     }, {
                         title: 'Allergies',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
-                        getContent: () => {
+                        getContent: () =>
+                        {
                             console.log('test');
                             return <AllergiesPanel allergiAddedList={allergiAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
-                           
+
                         }
                     }, {
                         title: 'Health-Info',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
-                        getContent: () => {
+                        getContent: () =>
+                        {
                             return <HealthinfoPanel healthinfoAddedList={healthinfoAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
-                           
+
                         }
                     }, {
                         title: 'Surgery',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
-                        getContent: () => {
+                        getContent: () =>
+                        {
                             return <SurgeryPanel surgeryAddedList={surgeryAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
-                           
+
                         }
                     }, {
                         title: 'Medication',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
-                        getContent: () => {
+                        getContent: () =>
+                        {
                             return <MedicationPanel medicationAddedList={medicationAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
                         }
                     }]} />
