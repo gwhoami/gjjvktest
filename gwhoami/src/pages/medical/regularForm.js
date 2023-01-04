@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useRef, useState } from "react";
-import { Menu, MenuItem, MenuHeader } from "@szhsin/react-menu";
+
 import Datetime from "react-datetime";
 import ReactFlagsSelect from "react-flags-select";
 import Constants from "../../helper/Constants";
@@ -12,14 +12,11 @@ import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { UserContext } from "../../util/maincontext";
 import { formList } from "./formLists";
-import { InputDOB } from "../../component/forms";
+
 
 
 const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageData, recordIndex, regularAddedList }) =>
 {
-    const [ui] = useState(-1);
-
-    const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
     const currentDom = useRef();
     const { scrollRef } = useContext(UserContext);
@@ -61,13 +58,7 @@ const RegularForm = React.memo(({ form, uiRefresh, regularMenus, alertRef, pageD
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    const menuClassName = ({ state }) =>
-        `box-border absolute z-50 p-5 bg-white text-gray-600 border rounded-md shadow-lg select-none focus:outline-none min-w-[8rem] ${state === "closed" && "hidden"
-        } ${state === "opening" && "animate-fadeIn"} ${state === "closing" && "animate-fadeOut"
-        }`;
-    const menuItemClassName = ({ hover, disabled, submenu }) =>
-        `focus:outline-none px-5 ${hover && "text-sky-b bg-white"
-        }`;
+
     const addBlood = (blood) =>
     {
         if (document.querySelector('.err-input'))

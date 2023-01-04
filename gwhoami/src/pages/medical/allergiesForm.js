@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from "react";
-import Datetime from "react-datetime";
 import ReactFlagsSelect from "react-flags-select";
 import Constants from "../../helper/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +12,8 @@ import { formList } from "./formLists";
 import MyLocalStorage from "../../util/mylocalStorage";
 // import { UserContext } from "../../util/maincontext";
 
-const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, allergiAddedList }) => {
+const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, allergiAddedList }) =>
+{
     const formRef = useRef(form);
     const currentDom = useRef();
     // const { scrollRef } = useContext(UserContext);
@@ -30,13 +30,15 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     const progress_ref = useRef();
     const file_ref = useRef();
     const progress = useRef({ value: 0 });
-    const progressHandler = (event) => {
+    const progressHandler = (event) =>
+    {
         let percent = (event.loaded / event.total) * 100;
         progress.current.value = Math.round(percent);
         subRefresh(Date.now());
     }
 
-    const completeHandler = (event) => {
+    const completeHandler = (event) =>
+    {
         allergiAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
@@ -44,7 +46,8 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     }
     const errorHandler = (event) => { }
     const abortHandler = (event) => { }
-    const fileChange = (evt) => {
+    const fileChange = (evt) =>
+    {
         let file = evt.currentTarget.files[0];
         if (typeof file === 'undefined') return;
         pageRef.current.selFileName = file.name;
@@ -52,20 +55,20 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    const countryCallback = (code, itm, idx) => {
+    const countryCallback = (code, itm, idx) =>
+    {
         itm.state = '';
         itm.country = code;
         subRefresh(Date.now());
     }
-    const stateList = (country) => {
+    const stateList = (country) =>
+    {
         return country === 'US' ? [...Constants.usa] : country === 'IN' ? [...Constants.india] : [];
     }
-    let inputProps = {
-        placeholder: 'MM/DD/YYYY',
-        className: "w-full rounded"
-    };
-    const saveAllergi = () => {
-        if (currentDom.current.querySelector('.err-input')) {
+    const saveAllergi = () =>
+    {
+        if (currentDom.current.querySelector('.err-input'))
+        {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
         }
@@ -77,12 +80,15 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         delete arr['isSubmit'];
         let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'allergi': arr } } }] :
             [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'allergi.id': arr.id }, _data: { $set: { "allergi.$": arr } }, _options: { upsert: false } }];
-        (async () => {
+        (async () =>
+        {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-            if (res.isError) {
+            if (res.isError)
+            {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
-            } else {
+            } else
+            {
                 arr.isSubmit = true;
                 let newlist = [...allergiAddedList.current];
                 newlist[recordIndex] = arr;
@@ -94,8 +100,10 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
             }
         })();
     }
-    const openFileUpload = () => {
-        if (typeof formRef.current.saved !== 'undefined') {
+    const openFileUpload = () =>
+    {
+        if (typeof formRef.current.saved !== 'undefined')
+        {
             ToastMessage({ type: 'error', message: 'Save the allergi and upload!', timeout: 1200 });
             return;
         }
@@ -103,7 +111,8 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         subRefresh(Date.now());
     }
     const modalRef = useRef();
-    const modalClose = useCallback((name, idx) => {
+    const modalClose = useCallback((name, idx) =>
+    {
         pageRef.current.title = '';
         pageRef.current.selFileName = '';
         pageRef.current.showProgress = false;
@@ -112,11 +121,14 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         pageRef.current.showProgressModal = !pageRef.current.showProgressModal; subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const modalSave = useCallback(() => {
-        if (!pageRef.current.title) {
+    const modalSave = useCallback(() =>
+    {
+        if (!pageRef.current.title)
+        {
             ToastMessage({ type: 'error', message: 'Please enter title', timeout: 1000 });
             return;
-        } else if (file_ref.current.files.length === 0) {
+        } else if (file_ref.current.files.length === 0)
+        {
             ToastMessage({ type: 'error', message: 'Please select document to upload', timeout: 1000 });
             return;
         }
@@ -132,7 +144,8 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         formdata.append("_id", pageData.current._id);
         formdata.append("recindex", recordIndex);
         //subRefresh(Date.now());
-        (async () => {
+        (async () =>
+        {
             var ajax = new XMLHttpRequest();
             ajax.upload.addEventListener("progress", progressHandler, false);
             ajax.addEventListener("load", completeHandler, false);
@@ -143,15 +156,18 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         })();
         // eslint-disable-next-line
     }, []);
-    const openfilePicker = () => {
+    const openfilePicker = () =>
+    {
         file_ref.current.click()
     }
-    const modalViewClose = useCallback(() => {
+    const modalViewClose = useCallback(() =>
+    {
         pageRef.current.showUploadWin = !pageRef.current.showUploadWin;
         subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const getFileIcon = (ext) => {
+    const getFileIcon = (ext) =>
+    {
         return ext === '.pdf' ? faFilePdf :
             ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.bmp' || ext === 'gif' ? faFileImage :
                 ext === '.doc' || ext === '.docx' ? faFileWord :
@@ -159,26 +175,34 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                         ext === '.ppt' || ext === '.pptx' ? faFilePowerpoint :
                             faFile;
     }
-    const downloadFile = (itm) => {
+    const downloadFile = (itm) =>
+    {
         window.location.href = `${process.env.REACT_APP_API_URL}/api/client/download_document?oriname=${itm.oriname}&filename=${itm.filename}&dt=${Date.now()}`
     }
-    const removeFile = (itm, idx) => {
-        alertRef.current.showConfirm((res) => {
+    const removeFile = (itm, idx) =>
+    {
+        alertRef.current.showConfirm((res) =>
+        {
             if (res === 'no') return;
             allergiAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeAllergi = () => {
-        if (allergiAddedList.current[recordIndex].saved === false) {
-            alertRef.current.showConfirm((res) => {
+    const removeAllergi = () =>
+    {
+        if (allergiAddedList.current[recordIndex].saved === false)
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 allergiAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
             }, 'Confirm?', 'Are you sure to delete this Allergi?');
-        } else {
-            alertRef.current.showConfirm((res) => {
+        } else
+        {
+            alertRef.current.showConfirm((res) =>
+            {
                 if (res === 'no') return;
                 let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'allergi': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
@@ -318,7 +342,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
 
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <label>Hospital Name</label>
+                                <label>Hospital Name</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
@@ -326,7 +350,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>Blood Group</label>
+                                <label>Blood Group</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value="" readOnly={true}></option>
@@ -334,22 +358,22 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                 </select>
                             </div>
                             <div className="w-1/3">
-                            <label>Date of birth</label>
+                                <label>Date of birth</label>
 
-                            <input
+                                <input
                                     type="text"
                                     value={MyLocalStorage.getLoginInfo().dob}
                                     readOnly={true}
                                     dateFormat="MM/DD/YYYY"
                                     className={`w-full rounded `}
                                 />
-                               
+
                             </div>
                         </div>
 
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                            <label>Name of the Doctor</label>
+                                <label>Name of the Doctor</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
@@ -357,7 +381,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
-                            <label>APGAR Score</label>
+                                <label>APGAR Score</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.apgarScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.apgarScore} onChange={e => { formRef.current.apgarScore = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
@@ -365,7 +389,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                 </select>
                             </div>
                             <div className="w-1/3">
-                            <label>Other Score</label>
+                                <label>Other Score</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.otherScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.otherScore} onChange={e => { formRef.current.otherScore = e.currentTarget.value; subRefresh(Date.now()) }}>
                                     <option value=""></option>
@@ -373,7 +397,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="flex flex-col w-full">
                                 <label>Comments</label>
