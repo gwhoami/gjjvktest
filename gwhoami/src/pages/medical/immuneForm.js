@@ -145,6 +145,19 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
         })();
         // eslint-disable-next-line
     }, []);
+    // const calculateAge = (birthDate, otherDate) => {
+    //     birthDate = new Date(birthDate);
+    //     otherDate = new Date(otherDate);
+    
+    //     var years = (otherDate.getFullYear() - birthDate.getFullYear());
+    
+    //     if (otherDate.getMonth() < birthDate.getMonth() || 
+    //         otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
+    //         years--;
+    //     }
+    
+    //     return years;
+    // }
     const openfilePicker = () => {
         file_ref.current.click()
     }
@@ -353,7 +366,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                             <label> When was the Last Dose?</label>
                             <Datetime
-                                    className={`w-full rounded ${!formRef.current.lastDose ? 'invalidyear' : ''}`}
+                                    className={`w-full rounded ${false ? ' pointer-events-none': ''} ${!formRef.current.lastDose ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
                                     closeOnSelect={true}

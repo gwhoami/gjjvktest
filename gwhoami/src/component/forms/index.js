@@ -123,7 +123,7 @@ export const InputPhone = React.memo(({styleClass, formKey, formRef, ui, label, 
                     {formRef.current[code] === '-' ? '-' : <><span className='mr-2'>{formRef.current[code]}</span><span>{formRef.current[code] === '+1' ? <Us/> : <In/>}</span></>}
                 </span>
                 <input 
-                    type="text" 
+                    type="text"
                     className={`rounded-none rounded-r-lg border ${inValidBorder()} text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                     placeholder={placeholder}
                     value={formRef.current[formKey]}

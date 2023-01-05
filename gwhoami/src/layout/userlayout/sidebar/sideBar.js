@@ -17,9 +17,12 @@ const SideBar = React.memo(() => {
             sidebar.classList.toggle('close');
         }, false);
     }, []);
-    const goToPage = (e, path) => {
+    const goToPage = (e, path, idx) => {
         e.preventDefault();
-        if (!path) return;
+        if (!path) {
+            if (typeof idx !== 'undefined') document.querySelector(`#nav-${idx}`).click();
+            return;
+        } 
         history.push(path);
     }
     return (
@@ -39,9 +42,9 @@ const SideBar = React.memo(() => {
                         </ul>
                     </li>: 
                     <li>
-                        <div className="icon_links">
-                            <a href="#/" onClick={e=>goToPage(e, undefined)}>{itm.icon}<span className="link_name">{itm.menu}</span></a>
-                            <i className='bx bxs-chevron-down arrow'></i>
+                        <div className="icon_links cursor-pointer" onClick={e=>goToPage(e, undefined, idx)}>
+                            <a href="#/" onClick={e=>e.preventDefault()}>{itm.icon}<span className="link_name">{itm.menu}</span></a>
+                            <i className='bx bxs-chevron-down arrow' id={`nav-${idx}`}></i>
                         </div>
                         <ul className="sub-menu">
                             {itm.sub.map((sub, subidx,icon)=>(

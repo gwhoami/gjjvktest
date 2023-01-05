@@ -11,6 +11,30 @@ export const formList = {
         royaltyIncome: '',
         year:'',
         otherIncome:'',
+        gymFin:'',
+        education:'',
+        gaming:'',
+        celebration:'',
+        beauty:'',
+        propTax:'',
+        movie:'',
+        phone:'',
+        lifeIns:'',
+        membership:'',
+        cCard:'',
+        houseMain:'',
+        banking:'',
+        houseHold:'',
+        petCare:'',
+        childCare:'',
+        kidsActivity:'',
+        schoolFees:'',
+        weddings:'',
+        taxes:'',
+        lawnCare:'',
+        otherFin:'',
+        monthFin:'',
+        yearFin:'',
         country: '',
         state: '',
         zipcode: '',
@@ -20,6 +44,7 @@ export const formList = {
         documents: []
     },
     optCurrentyear:['Yes','No'],
+    optFName:['Yes','No'],
     localeByCountry: {
         'IN': 'en-IN',
         'US': 'ens-US'
@@ -93,6 +118,16 @@ export const formList = {
         clothing:'',
         gifts:'',
         charitable:'',
+        software:'',
+        entertainment:'',
+        vacation:'',
+        transportFin:'',
+        compFin:'',
+
+
+
+
+
         personName: '',
         country: '',
         state: '',
