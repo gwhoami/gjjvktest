@@ -35,6 +35,7 @@ export const formList = {
         otherFin:'',
         monthFin:'',
         yearFin:'',
+        homeIns:'',
         country: '',
         state: '',
         zipcode: '',

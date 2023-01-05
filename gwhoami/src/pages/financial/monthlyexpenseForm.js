@@ -329,7 +329,7 @@ const MonthlyexpenseForm = React.memo(({ form, uiRefresh, alertRef, pageData, re
                                     type="text"
                                     value={formRef.current.homeIns}
                                     className={`w-full rounded border ${!formRef.current.homeIns ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.HomeIns = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    onChange={e => { formRef.current.homeIns = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                             <div className="w-1/4 mr-5">
