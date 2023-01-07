@@ -11,6 +11,7 @@ import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 
 const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, regularAddedList }) => {
@@ -287,7 +288,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                     {formList.bloodGroup.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                            <div className="w-1/3">
+                            <div className="w-1/3 mr-5">
                                 <label>Date of birth</label>
                                 <Datetime
                                     className={`w-full rounded ${!formRef.current.dob ? 'invalidyear' : ''}`}
@@ -300,7 +301,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                     onChange={date => { formRef.current.dob = date; subRefresh(Date.now()); }}
                                 />
 
-                            </div>
+                             </div>
                         </div>  
                         
                         <div className="flex w-full justify-start items-center mt-3">
@@ -351,7 +352,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                                 onChange={e => { formRef.current.height = e.currentTarget.value; subRefresh(Date.now()); }}
                                             />
                                         </div>
-                                        <div className="w-1/3">
+                                        <div className="w-1/3 mr-5">
                                             <label>Weight</label>
                                             <input
                                                 type="text"
@@ -379,7 +380,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                                 {formList.apgarScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                             </select>
                                         </div>
-                                        <div className="w-1/3">
+                                        <div className="w-1/3 mr-5">
                                             <label>Other Score</label>
                                             <select
                                                 className={`border w-full p-2 rounded ${!formRef.current.otherScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.otherScore} onChange={e => { formRef.current.otherScore = e.currentTarget.value; subRefresh(Date.now()) }}>
@@ -388,10 +389,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                             </select>
                                         </div>
                                     </div>
-
-
-
-                        
+                       
                                    <div className="flex w-full justify-start items-center mt-3">
                                         <div className="flex flex-col w-full">
                                             <label>Comments/Recent Activity Weight and Length, Eye Drops, Vitamin K, Newborn Screening, Hepatities Vaccine</label>

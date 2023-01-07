@@ -31,6 +31,7 @@ const NavList = {
         icon: <i className="bx bx-plus-medical"></i>,
         sub: [
             { name: 'Medical' },
+            { icon: <i className="bx bx-info-circle"></i>, name: 'Basic', path: "/user/medical/basic" },
             { icon: <i className="bx bx-info-circle"></i>, name: 'General', path: "/user/medical/general" },
             { icon: <i className=" bx bxs-injection"></i>, name: 'Immunization', path: "/user/medical/immune" },
             { icon: <i className="bx bxs-virus"></i>, name: 'Allergies', path: "/user/medical/allergi" },

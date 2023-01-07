@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose");
 
 const medicalSchema = new mongoose.Schema({
     userid: {type: mongoose.Schema.Types.ObjectId, index: true},
+    basic: [mongoose.Schema.Types.Mixed],
     regular: [mongoose.Schema.Types.Mixed],
     immune: [mongoose.Schema.Types.Mixed],
     allergi: [mongoose.Schema.Types.Mixed],

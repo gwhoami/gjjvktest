@@ -1,19 +1,21 @@
 import React, { useCallback, useRef, useState } from "react";
+import Datetime from "react-datetime";
 import ReactFlagsSelect from "react-flags-select";
 import Constants from "../../helper/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faFile, faFileAlt, faFileExcel, faFileImage, faFilePdf, faFilePowerpoint, faFileWord, faSave, faSearch, faTrashAlt, faUpload } from "@fortawesome/free-solid-svg-icons";
 import ToastMessage from "../../toast";
-import { ButtonLoader } from "../../component/forms";
+import { ButtonLoader} from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
-import MyLocalStorage from "../../util/mylocalStorage";
 // import { UserContext } from "../../util/maincontext";
+import MyLocalStorage from "../../util/mylocalStorage";
 
-const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, allergiAddedList }) =>
-{
+
+const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, basicAddedList }) => {
+    
     const formRef = useRef(form);
     const currentDom = useRef();
     // const { scrollRef } = useContext(UserContext);
@@ -30,24 +32,21 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     const progress_ref = useRef();
     const file_ref = useRef();
     const progress = useRef({ value: 0 });
-    const progressHandler = (event) =>
-    {
+    const progressHandler = (event) => {
         let percent = (event.loaded / event.total) * 100;
         progress.current.value = Math.round(percent);
         subRefresh(Date.now());
     }
 
-    const completeHandler = (event) =>
-    {
-        allergiAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+    const completeHandler = (event) => {
+        basicAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
     }
     const errorHandler = (event) => { }
     const abortHandler = (event) => { }
-    const fileChange = (evt) =>
-    {
+    const fileChange = (evt) => {
         let file = evt.currentTarget.files[0];
         if (typeof file === 'undefined') return;
         pageRef.current.selFileName = file.name;
@@ -55,20 +54,20 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         progress.current.value = 0;
         subRefresh(Date.now());
     }
-    const countryCallback = (code, itm, idx) =>
-    {
+    const countryCallback = (code, itm, idx) => {
         itm.state = '';
         itm.country = code;
         subRefresh(Date.now());
     }
-    const stateList = (country) =>
-    {
+    const stateList = (country) => {
         return country === 'US' ? [...Constants.usa] : country === 'IN' ? [...Constants.india] : [];
     }
-    const saveAllergi = () =>
-    {
-        if (currentDom.current.querySelector('.err-input'))
-        {
+    let inputProps = {
+        placeholder: 'MM/DD/YYYY',
+        className: "w-full rounded"
+    };
+    const saveBasic = () => {
+        if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
         }
@@ -78,41 +77,35 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'allergi': arr } } }] :
-            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'allergi.id': arr.id }, _data: { $set: { "allergi.$": arr } }, _options: { upsert: false } }];
-        (async () =>
-        {
+        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'basic': arr } } }] :
+            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'basic.id': arr.id }, _data: { $set: { "basic.$": arr } }, _options: { upsert: false } }];
+        (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-            if (res.isError)
-            {
+            if (res.isError) {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
-            } else
-            {
+            } else {
                 arr.isSubmit = true;
-                let newlist = [...allergiAddedList.current];
+                let newlist = [...basicAddedList.current];
                 newlist[recordIndex] = arr;
-                allergiAddedList.current = newlist;
+                basicAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Allergies added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'Basic Deatails added succesfully!', timeout: 1200 });
             }
         })();
     }
-    const openFileUpload = () =>
-    {
-        if (typeof formRef.current.saved !== 'undefined')
-        {
-            ToastMessage({ type: 'error', message: 'Save the allergi and upload!', timeout: 1200 });
+    const openFileUpload = () => {
+        if (typeof formRef.current.saved !== 'undefined') {
+            ToastMessage({ type: 'error', message: 'Save the Basic and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
         subRefresh(Date.now());
     }
     const modalRef = useRef();
-    const modalClose = useCallback((name, idx) =>
-    {
+    const modalClose = useCallback((name, idx) => {
         pageRef.current.title = '';
         pageRef.current.selFileName = '';
         pageRef.current.showProgress = false;
@@ -121,14 +114,11 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         pageRef.current.showProgressModal = !pageRef.current.showProgressModal; subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const modalSave = useCallback(() =>
-    {
-        if (!pageRef.current.title)
-        {
+    const modalSave = useCallback(() => {
+        if (!pageRef.current.title) {
             ToastMessage({ type: 'error', message: 'Please enter title', timeout: 1000 });
             return;
-        } else if (file_ref.current.files.length === 0)
-        {
+        } else if (file_ref.current.files.length === 0) {
             ToastMessage({ type: 'error', message: 'Please select document to upload', timeout: 1000 });
             return;
         }
@@ -144,8 +134,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         formdata.append("_id", pageData.current._id);
         formdata.append("recindex", recordIndex);
         //subRefresh(Date.now());
-        (async () =>
-        {
+        (async () => {
             var ajax = new XMLHttpRequest();
             ajax.upload.addEventListener("progress", progressHandler, false);
             ajax.addEventListener("load", completeHandler, false);
@@ -156,18 +145,28 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
         })();
         // eslint-disable-next-line
     }, []);
-    const openfilePicker = () =>
-    {
+    // const calculateAge = (birthDate, otherDate) => {
+    //     birthDate = new Date(birthDate);
+    //     otherDate = new Date(otherDate);
+    
+    //     var years = (otherDate.getFullYear() - birthDate.getFullYear());
+    
+    //     if (otherDate.getMonth() < birthDate.getMonth() || 
+    //         otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
+    //         years--;
+    //     }
+    
+    //     return years;
+    // }
+    const openfilePicker = () => {
         file_ref.current.click()
     }
-    const modalViewClose = useCallback(() =>
-    {
+    const modalViewClose = useCallback(() => {
         pageRef.current.showUploadWin = !pageRef.current.showUploadWin;
         subRefresh(Date.now());
         // eslint-disable-next-line
     }, []);
-    const getFileIcon = (ext) =>
-    {
+    const getFileIcon = (ext) => {
         return ext === '.pdf' ? faFilePdf :
             ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.bmp' || ext === 'gif' ? faFileImage :
                 ext === '.doc' || ext === '.docx' ? faFileWord :
@@ -175,40 +174,32 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                         ext === '.ppt' || ext === '.pptx' ? faFilePowerpoint :
                             faFile;
     }
-    const downloadFile = (itm) =>
-    {
+    const downloadFile = (itm) => {
         window.location.href = `${process.env.REACT_APP_API_URL}/api/client/download_document?oriname=${itm.oriname}&filename=${itm.filename}&dt=${Date.now()}`
     }
-    const removeFile = (itm, idx) =>
-    {
-        alertRef.current.showConfirm((res) =>
-        {
+    const removeFile = (itm, idx) => {
+        alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            allergiAddedList.current[recordIndex].documents.splice(idx, 1);
+            basicAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeAllergi = () =>
-    {
-        if (allergiAddedList.current[recordIndex].saved === false)
-        {
-            alertRef.current.showConfirm((res) =>
-            {
+    const removeBasic = () => {
+        if (basicAddedList.current[recordIndex].saved === false) {
+            alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                allergiAddedList.current.splice(recordIndex, 1);
+                basicAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Allergi?');
-        } else
-        {
-            alertRef.current.showConfirm((res) =>
-            {
+            }, 'Confirm?', 'Are you sure to delete this Basic?');
+        } else {
+            alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'allergi': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'basic': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                allergiAddedList.current.splice(recordIndex, 1);
+                basicAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this allergi?');
+            }, 'Confirm?', 'Are you sure to delete this Basic?');
         }
     }
     return (
@@ -275,42 +266,44 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
                     className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeAllergi}
+                    onClick={removeBasic}
                 ></i>
                 <div className="pt-5 pb-3">
+                    
                     <form>
-                        <div className="flex w-full justify-start items-center relative">
+                    <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
-                                <label>First Name</label>
-                                <input
-                                    type="text"
-                                    value={formRef.current.firstName}
-                                    placeholder="First Name"
-                                    disabled={true}
-                                    className={`w-full rounded border ${!formRef.current.firstName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.firstName = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Last Name</label>
-                                <input
-                                    type="text"
-                                    placeholder="Last Name"
-                                    disabled={true}
-                                    value={formRef.current.lastName}
-                                    className={`w-full rounded border ${!formRef.current.lastName ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.lastName = e.currentTarget.value; subRefresh(Date.now()); }}
-                                />
-                            </div>
-                            <div className="w-1/3">
-                                <label>Type [Mr/Mrs]</label>
+                                <label>Hospital Name</label>
                                 <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.regularType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.regularType} onChange={e => { formRef.current.regularType = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.regularType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                    className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value="">Select</option>
+                                    {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                        </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Blood Group</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value="">Select</option>
+                                    {formList.bloodGroup.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Date of birth</label>
+                                <Datetime
+                                    className={`w-full rounded ${!formRef.current.dob ? 'invalidyear' : ''}`}
+                                    placeholder="MM/DD/YYYY"
+                                    dateFormat="MM/DD/YYYY"
+                                    closeOnSelect={true}
+                                    timeFormat={false}
+                                    inputProps={inputProps}
+                                    value={formRef.current.dob ? new Date(formRef.current.dob) : ''}
+                                    onChange={date => { formRef.current.dob = date; subRefresh(Date.now()); }}
+                                />
+
+                             </div>
+                        </div>  
+                        
                         <div className="flex w-full justify-start items-center mt-3">
                             <div className="w-1/3 mr-5">
                                 <label>Country</label>
@@ -325,89 +318,91 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>State</label>
                                 <select className={`border w-full p-2 rounded ${!formRef.current.state ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.state} onChange={e => { formRef.current.state = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
+                                    <option value="">-- Select State --</option>
                                     {stateList(formRef.current.country).map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
                                 </select>
                             </div>
-                            <div className="w-1/3">
+                            <div className="w-1/3 mr-5">
                                 <label>Zip Code</label>
                                 <input
                                     type="text"
+                                    placeholder="Enter Zip code"
                                     value={formRef.current.zipcode}
                                     className={`w-full rounded border ${!formRef.current.zipcode ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.zipcode = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
                             </div>
                         </div>
-
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                                <label>Hospital Name</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.hospitalName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.hospitalName} onChange={e => { formRef.current.hospitalName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.hospitalName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>Blood Group</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value="" readOnly={true}></option>
-                                    {formList.bloodGroup.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3">
-                                <label>Date of birth</label>
-                                <input
-                                    type="text"
-                                    value={MyLocalStorage.getLoginInfo().dob}
-                                    readOnly={true}
-                                    dateFormat="MM/DD/YYYY"
-                                    className={`w-full rounded `}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="w-1/3 mr-5">
-                                <label>Name of the Doctor</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.doctorName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3 mr-5">
-                                <label>APGAR Score</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.apgarScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.apgarScore} onChange={e => { formRef.current.apgarScore = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.apgarScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                            <div className="w-1/3">
-                                <label>Other Score</label>
-                                <select
-                                    className={`border w-full p-2 rounded ${!formRef.current.otherScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.otherScore} onChange={e => { formRef.current.otherScore = e.currentTarget.value; subRefresh(Date.now()) }}>
-                                    <option value=""></option>
-                                    {formList.otherScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="flex w-full justify-start items-center mt-3">
-                            <div className="flex flex-col w-full">
-                                <label>Comments</label>
-                                <textarea
-                                    className={`w-full rounded border ${!formRef.current.allergiComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    value={formRef.current.allergiComments}
-                                    onChange={e => { formRef.current.allergiComments = e.currentTarget.value; subRefresh(Date.now()); }}
-                                    rows={4}
-                                >
-                                </textarea>
-                            </div>
-                        </div>
+                        <div className="flex w-full justify-start items-center relative">
+                                        <div className="w-1/3 mr-5">
+                                            <label>Age</label>
+                                            <input
+                                                type="text"
+                                                value={formRef.current.age}
+                                                className={`w-full rounded border ${!formRef.current.age ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                onChange={e => { formRef.current.age = e.currentTarget.value; subRefresh(Date.now()); }}
+                                            />
+                                        </div>
+                                        <div className="w-1/3 mr-5">
+                                            <label>Height</label>
+                                            <input
+                                                type="text"
+                                                value={formRef.current.height}
+                                                className={`w-full rounded border ${!formRef.current.height ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                onChange={e => { formRef.current.height = e.currentTarget.value; subRefresh(Date.now()); }}
+                                            />
+                                        </div>
+                                        <div className="w-1/3 mr-5">
+                                            <label>Weight</label>
+                                            <input
+                                                type="text"
+                                                value={formRef.current.weight}
+                                                className={`w-full rounded border ${!formRef.current.weight ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                onChange={e => { formRef.current.weight = e.currentTarget.value; subRefresh(Date.now()); }}
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex w-full justify-start items-center mt-3">
+                                        <div className="w-1/3 mr-5">
+                                            <label>Name of the Doctor</label>
+                                            <select
+                                                className={`border w-full p-2 rounded ${!formRef.current.doctorName ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.doctorName} onChange={e => { formRef.current.doctorName = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                                <option value=""></option>
+                                                {formList.doctorName.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="w-1/3 mr-5">
+                                            <label>APGAR Score</label>
+                                            <select
+                                                className={`border w-full p-2 rounded ${!formRef.current.apgarScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.apgarScore} onChange={e => { formRef.current.apgarScore = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                                <option value=""></option>
+                                                {formList.apgarScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="w-1/3 mr-5">
+                                            <label>Other Score</label>
+                                            <select
+                                                className={`border w-full p-2 rounded ${!formRef.current.otherScore ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.otherScore} onChange={e => { formRef.current.otherScore = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                                <option value=""></option>
+                                                {formList.otherScore.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+                       
+                                   <div className="flex w-full justify-start items-center mt-3">
+                                        <div className="flex flex-col w-full">
+                                            <label>Comments/Recent Activity Weight and Length, Eye Drops, Vitamin K, Newborn Screening, Hepatities Vaccine</label>
+                                            <textarea
+                                                className={`w-full rounded border ${!formRef.current.regularComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                value={formRef.current.regularComments}
+                                                onChange={e => { formRef.current.regularComments = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                rows={4}
+                                            >
+                                            </textarea>
+                                        </div>
+                                    </div>
+                        
                         <div className="flex justify-between items-end mt-3">
                             <div className="flex">
                                 <button
@@ -427,7 +422,7 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveAllergi}
+                                    onClick={saveBasic}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -441,4 +436,4 @@ const AllergiesForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
     );
 });
 
-export default AllergiesForm;
+export default BasicForm;

@@ -1,4 +1,25 @@
 export const formList = {
+    basic: {
+        saved: false,
+        isSubmit: true,
+        firstName: '',
+        lastName: '',
+        regularName:'',
+        regularType: '',
+        blood:'',
+        age:'',
+        country: '',
+        state: '',
+        zipcode: '',
+        dob: '',
+        bodyMI:'',
+        bcbs:'',
+        medicalShop:'',
+        isRecentRegular: true,
+        regularComments: '',
+        documents: []
+    },
+    
     regular: {
         saved: false,
         isSubmit: true,
