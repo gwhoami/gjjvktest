@@ -6,7 +6,7 @@ import { Spinner } from "../../component/forms";
 import { apiPostCall } from "../../helper/API";
 import ToastMessage from "../../toast";
 import MyLocalStorage from "../../util/mylocalStorage";
-import BasicPanel from "./basic";
+import NewbornPanel from "./newborn";
 import RegularPanel from "./regular";
 import ImmunePanel from "./immune";
 import AllergiesPanel from "./allergies";
@@ -18,7 +18,7 @@ import { formList } from "./formLists";
 const MedicalTabs = React.memo(() => {
     const [ui, uiRefresh] = useState(-1);
     const pageData = useRef({ init: false, _id: '' });
-    const basicAddedList = useRef([]);
+    const newbornAddedList = useRef([]);
     const regularAddedList = useRef([]);
     const immuneAddedList = useRef([]);
     const allergiAddedList = useRef([]);
@@ -28,18 +28,18 @@ const MedicalTabs = React.memo(() => {
     const { tabid } = useParams();
     useEffect(() => {
         (async () => {
-            let search = [{ _modal: 'PropertyList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'basic regular immune allergi healthinfo surgery medication' }];
+            let search = [{ _modal: 'PropertyList', _find: { userid: MyLocalStorage.getUserId() }, _mode: 'single', _select: 'newborn regular immune allergi healthinfo surgery medication' }];
             const res = await apiPostCall('/api/common/common_search', { _list: search });
             if (res.isError) {
                 ToastMessage({ type: "error", message: res.Error.response.data.message, timeout: 2000 });
                 return;
             } else {
                 if (res && res.length === 0) {
-                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'PropertyList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), basic: [], regular: [], immune: [], allergi: [], healthinfo: [], surgery: [], medication: [] } }] });
+                    const newrecord = await apiPostCall('/api/common/common_mutiple_insert', { _list: [{ _modal: 'PropertyList', _condition: 'new', _data: { userid: MyLocalStorage.getUserId(), newborn: [], regular: [], immune: [], allergi: [], healthinfo: [], surgery: [], medication: [] } }] });
                     pageData.current._id = newrecord.upsertedId;
                 } else {
                     pageData.current._id = res._id;
-                    basicAddedList.current = res.basic || [];
+                    newbornAddedList.current = res.newborn || [];
                     regularAddedList.current = res.regular || [];
                     immuneAddedList.current = res.immune || [];
                     allergiAddedList.current = res.allergi || [];
@@ -59,16 +59,16 @@ const MedicalTabs = React.memo(() => {
         <div className="flex px-6 w-full container justify-center mx-auto pb-5">
             <div className="sm:w-full md:w-full xl:w-3/5 mt-20">
             <Tabs
-                    selectedTabKey={tabid === 'basic' ? 0 : tabid === 'regular' ? 1 : tabid === 'immune' ? 2 : tabid === 'allergi' ? 3 : tabid === 'healthinfo' ? 4 : tabid === 'surgery' ? 5 : tabid === 'medication' ? 6 : 0}
+                    selectedTabKey={tabid === 'newborn' ? 0 : tabid === 'regular' ? 1 : tabid === 'immune' ? 2 : tabid === 'allergi' ? 3 : tabid === 'healthinfo' ? 4 : tabid === 'surgery' ? 5 : tabid === 'medication' ? 6 : 0}
                     transformWidth={600}
                     tabClassName="bg-red-100"
                     items={[{
-                        title: 'Basic',
+                        title: 'New Born',
                         tabClassName: 'customtab',
                         panelClassName: 'custompanel',
                         getContent: () =>
                         {
-                            return <BasicPanel basicAddedList={basicAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
+                            return <NewbornPanel newbornAddedList={newbornAddedList} pageData={pageData} ui={ui} uiRefresh={uiRefresh} />
                         }
                     }, {
                         title: 'Regular',

@@ -1,11 +1,9 @@
 export const formList = {
-    basic: {
+    newborn: {
         saved: false,
         isSubmit: true,
-        firstName: '',
-        lastName: '',
-        regularName:'',
-        regularType: '',
+        newbornName:'',
+        newbornType: '',
         blood:'',
         age:'',
         country: '',
@@ -15,16 +13,15 @@ export const formList = {
         bodyMI:'',
         bcbs:'',
         medicalShop:'',
-        isRecentRegular: true,
-        regularComments: '',
+        newbornComments: '',
         documents: []
     },
+    newbornMenu: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    newbornType: ['Male', 'Female', 'Other'],
     
     regular: {
         saved: false,
         isSubmit: true,
-        firstName: '',
-        lastName: '',
         regularName:'',
         regularType: '',
         blood:'',
@@ -32,11 +29,9 @@ export const formList = {
         country: '',
         state: '',
         zipcode: '',
-        dob: '',
         bodyMI:'',
         bcbs:'',
         medicalShop:'',
-        isRecentRegular: true,
         regularComments: '',
         documents: []
     },
@@ -85,7 +80,6 @@ export const formList = {
         state: '',
         zipcode: '',
         from: '',
-        isRecentBusiness: true,
         allergiComments: '',
         documents: [],
     },

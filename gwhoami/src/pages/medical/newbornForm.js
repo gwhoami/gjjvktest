@@ -14,7 +14,7 @@ import { formList } from "./formLists";
 import MyLocalStorage from "../../util/mylocalStorage";
 
 
-const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, basicAddedList }) => {
+const NewbornForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, newbornAddedList }) => {
     
     const formRef = useRef(form);
     const currentDom = useRef();
@@ -39,7 +39,7 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
     }
 
     const completeHandler = (event) => {
-        basicAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
+        newbornAddedList.current[recordIndex].documents.push({ ...pageRef.current.file_record });
         pageRef.current.file_record = {}
         uiRefresh(Date.now());
         modalClose();
@@ -66,7 +66,7 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
         placeholder: 'MM/DD/YYYY',
         className: "w-full rounded"
     };
-    const saveBasic = () => {
+    const saveNewborn = () => {
         if (currentDom.current.querySelector('.err-input')) {
             ToastMessage({ type: 'error', message: `Please fill the required fields`, timeout: 1200 });
             return;
@@ -77,8 +77,8 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
         let isNew = typeof arr['saved'] !== 'undefined';
         if (isNew) delete arr['saved'];
         delete arr['isSubmit'];
-        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'basic': arr } } }] :
-            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'basic.id': arr.id }, _data: { $set: { "basic.$": arr } }, _options: { upsert: false } }];
+        let params = isNew ? [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $push: { 'newborn': arr } } }] :
+            [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id, 'newborn.id': arr.id }, _data: { $set: { "newborn.$": arr } }, _options: { upsert: false } }];
         (async () => {
             const res = await apiPostCall('/api/common/common_mutiple_insert', { _list: params });
             if (res.isError) {
@@ -86,19 +86,19 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
                 return;
             } else {
                 arr.isSubmit = true;
-                let newlist = [...basicAddedList.current];
+                let newlist = [...newbornAddedList.current];
                 newlist[recordIndex] = arr;
-                basicAddedList.current = newlist;
+                newbornAddedList.current = newlist;
                 pageRef.current.isSaving = false;
                 formRef.current = { ...arr }
                 uiRefresh(Date.now());
-                ToastMessage({ type: 'success', message: 'Basic Deatails added succesfully!', timeout: 1200 });
+                ToastMessage({ type: 'success', message: 'Newborn Deatails added succesfully!', timeout: 1200 });
             }
         })();
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the Basic and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the Newborn and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -180,26 +180,26 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
     const removeFile = (itm, idx) => {
         alertRef.current.showConfirm((res) => {
             if (res === 'no') return;
-            basicAddedList.current[recordIndex].documents.splice(idx, 1);
+            newbornAddedList.current[recordIndex].documents.splice(idx, 1);
             subRefresh(Date.now());
             apiPostCall('/api/client/delete_document', { _id: pageData.current._id, recindex: recordIndex, fileid: itm.id, filename: itm.filename });
         }, 'Confirm?', 'Are you sure to delete this file?');
     }
-    const removeBasic = () => {
-        if (basicAddedList.current[recordIndex].saved === false) {
+    const removeNewborn = () => {
+        if (newbornAddedList.current[recordIndex].saved === false) {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                basicAddedList.current.splice(recordIndex, 1);
+                newbornAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Basic?');
+            }, 'Confirm?', 'Are you sure to delete this Newborn?');
         } else {
             alertRef.current.showConfirm((res) => {
                 if (res === 'no') return;
-                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'basic': { id: formRef.current.id } } } }];
+                let params = [{ _modal: 'MedicalList', _condition: 'update', _find: { _id: pageData.current._id }, _data: { $pull: { 'newborn': { id: formRef.current.id } } } }];
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
-                basicAddedList.current.splice(recordIndex, 1);
+                newbornAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Basic?');
+            }, 'Confirm?', 'Are you sure to delete this New born?');
         }
     }
     return (
@@ -266,7 +266,7 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
             <div className="p-5 border rounded shadow-md relative" ref={currentDom}>
                 <i
                     className='bx bxs-trash absolute right-2 top-2 text-2xl cursor-pointer text-gray-300 hover:text-red-500'
-                    onClick={removeBasic}
+                    onClick={removeNewborn}
                 ></i>
                 <div className="pt-5 pb-3">
                     
@@ -422,7 +422,7 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
                             <div className="flex items-end">
                                 <button
                                     type="button"
-                                    onClick={saveBasic}
+                                    onClick={saveNewborn}
                                     className="bg-red-600 px-3 h-8 text-white text-sm shadow-md flex justify-center items-center hover:bg-red-500 ml-3"
                                 >
                                     {pageRef.current.isSaving ? <div className="flex justify-center items-center w-12"><ButtonLoader /></div> : <><FontAwesomeIcon icon={faSave} className="mr-2" />Save</>}
@@ -436,4 +436,4 @@ const BasicForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex
     );
 });
 
-export default BasicForm;
+export default NewbornForm;
