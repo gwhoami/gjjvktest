@@ -281,6 +281,27 @@ const NewbornForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
+                                <label>Baby Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter Baby Name"
+                                    value={formRef.current.babyName}
+                                    className={`w-full rounded border ${!formRef.current.babyName ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.babyName = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                                <label>Gender Type</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.genderType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.genderType} onChange={e => { formRef.current.genderType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value="">Select</option>
+                                    {formList.genderType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                             </div>
+                        </div>  
+                        
+                    <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
                                 <label>Blood Group</label>
                                 <select
                                     className={`border w-full p-2 rounded ${!formRef.current.bloodGroup ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.bloodGroup} onChange={e => { formRef.current.bloodGroup = e.currentTarget.value; subRefresh(Date.now()) }}>
@@ -301,6 +322,16 @@ const NewbornForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                     onChange={date => { formRef.current.dob = date; subRefresh(Date.now()); }}
                                 />
 
+                             </div>
+                             <div className="w-1/3 mr-5">
+                                 <label>Parent Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter Parent Name"
+                                    value={formRef.current.parentName}
+                                    className={`w-full rounded border ${!formRef.current.parentName ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.parentName = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                              </div>
                         </div>  
                         
@@ -394,9 +425,9 @@ const NewbornForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                         <div className="flex flex-col w-full">
                                             <label>Comments/Recent Activity Weight and Length, Eye Drops, Vitamin K, Newborn Screening, Hepatities Vaccine</label>
                                             <textarea
-                                                className={`w-full rounded border ${!formRef.current.regularComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                                value={formRef.current.regularComments}
-                                                onChange={e => { formRef.current.regularComments = e.currentTarget.value; subRefresh(Date.now()); }}
+                                                className={`w-full rounded border ${!formRef.current.newbornComments ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                                value={formRef.current.newbornComments}
+                                                onChange={e => { formRef.current.newbornComments = e.currentTarget.value; subRefresh(Date.now()); }}
                                                 rows={4}
                                             >
                                             </textarea>

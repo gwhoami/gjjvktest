@@ -11,7 +11,7 @@ import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
-import MyLocalStorage from "../../util/mylocalStorage";
+//import MyLocalStorage from "../../util/mylocalStorage";
 
 
 const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, regularAddedList }) => {
@@ -98,7 +98,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
     }
     const openFileUpload = () => {
         if (typeof formRef.current.saved !== 'undefined') {
-            ToastMessage({ type: 'error', message: 'Save the Regular and upload!', timeout: 1200 });
+            ToastMessage({ type: 'error', message: 'Save the regular and upload!', timeout: 1200 });
             return;
         }
         pageRef.current.showProgressModal = true;
@@ -199,7 +199,7 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                 apiPostCall('/api/common/common_mutiple_insert', { _list: params });
                 regularAddedList.current.splice(recordIndex, 1);
                 uiRefresh(Date.now());
-            }, 'Confirm?', 'Are you sure to delete this Regular?');
+            }, 'Confirm?', 'Are you sure to delete this New born?');
         }
     }
     return (
@@ -289,6 +289,20 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                 </select>
                             </div>
                             <div className="w-1/3 mr-5">
+                                <label>Gender Type</label>
+                                <select
+                                    className={`border w-full p-2 rounded ${!formRef.current.genderType ? 'border-red-500 err-input' : 'border-gray-400'}`} defaultValue={formRef.current.genderType} onChange={e => { formRef.current.genderType = e.currentTarget.value; subRefresh(Date.now()) }}>
+                                    <option value="">Select</option>
+                                    {formList.genderType.map((itm, idx) => <option key={idx} value={itm.key || itm}>{itm.name || itm}</option>)}
+                                </select>
+                             </div>
+                        </div>  
+                        
+                    <div className="flex w-full justify-start items-center mt-3">
+                            <div className="w-1/3 mr-5">
+                                
+                            </div>
+                            <div className="w-1/3 mr-5">
                                 <label>Date of birth</label>
                                 <Datetime
                                     className={`w-full rounded ${!formRef.current.dob ? 'invalidyear' : ''}`}
@@ -301,6 +315,16 @@ const RegularForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInd
                                     onChange={date => { formRef.current.dob = date; subRefresh(Date.now()); }}
                                 />
 
+                             </div>
+                             <div className="w-1/3 mr-5">
+                                 <label>Parent Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter Parent Name"
+                                    value={formRef.current.parentName}
+                                    className={`w-full rounded border ${!formRef.current.parentName ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.parentName = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                              </div>
                         </div>  
                         

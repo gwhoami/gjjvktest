@@ -32,7 +32,7 @@ const NavList = {
         sub: [
             { name: 'Medical' },
             { icon: <i className="bx bx-info-circle"></i>, name: 'Newborn', path: "/user/medical/newborn" },
-            { icon: <i className="bx bx-info-circle"></i>, name: 'General', path: "/user/medical/general" },
+            { icon: <i className="bx bx-info-circle"></i>, name: 'Regular', path: "/user/medical/regular" },
             { icon: <i className=" bx bxs-injection"></i>, name: 'Immunization', path: "/user/medical/immune" },
             { icon: <i className="bx bxs-virus"></i>, name: 'Allergies', path: "/user/medical/allergi" },
             { icon: <i className="bx bxs-first-aid"></i>, name: 'Health-Info', path: "/user/medical/healthinfo" },
