@@ -12,6 +12,7 @@ import { nanoid } from "nanoid";
 import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
 import { InputRadio } from "../../component/forms";
+import MyLocalStorage from "../../util/mylocalStorage";
 
 const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, immuneAddedList }) => {
     const [ui] = useState(-1);
@@ -202,6 +203,25 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
             }, 'Confirm?', 'Are you sure to delete this immune?');
         }
     }
+
+
+
+    const calculateAge = (birthDate, otherDate) => {
+             birthDate = new Date(birthDate);
+             otherDate = new Date(otherDate);
+        
+             var years = (otherDate.getFullYear() - birthDate.getFullYear());
+        
+             if (otherDate.getMonth() < birthDate.getMonth() || 
+                 otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
+                 years--;
+             }
+        
+             return years;
+         }
+
+
+
     return (
         <>
             {pageRef.current.showUploadWin &&
@@ -333,14 +353,21 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                 <input
                                     type="text"
                                     placeholder="Enter Age"
-                                    value={formRef.current.age}
-                                    className={`w-full rounded border ${!formRef.current.age ? 'border-red-500 err-input' : 'border-gray-400'}`}
-                                    onChange={e => { formRef.current.age = e.currentTarget.value; subRefresh(Date.now()); }}
+                                    value={calculateAge(MyLocalStorage.getLoginInfo().dob,Date.now())}
+                                    className={`w-full rounded border ${'border-blue-400'}`}
                                 />
                             </div>
                             <div className="w-1/3 mr-5">
                             <label>Date of birth</label>
-                                <Datetime
+                                <input
+                                    type="text"
+                                    value={MyLocalStorage.getLoginInfo().dob}
+                                    readOnly={true}
+                                    dateFormat="MM/DD/YYYY"
+                                    className={`w-full rounded border ${'border-blue-400'}`}
+                                />
+                            {/*<label>Date of birth</label>
+                                  <Datetime
                                     className={`w-full rounded ${!formRef.current.from ? 'invalidyear' : ''}`}
                                     placeholder="MM/DD/YYYY"
                                     dateFormat="MM/DD/YYYY"
@@ -349,7 +376,7 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     inputProps={inputProps}
                                     value={formRef.current.from ? new Date(formRef.current.from) : ''}
                                     onChange={date => { formRef.current.from = date; subRefresh(Date.now()); }}
-                                />
+                            />  */}
                             </div>
                             <div className="w-1/3 mr-5">
                             <label>Dose Name</label>
