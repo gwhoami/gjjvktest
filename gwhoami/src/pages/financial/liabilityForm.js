@@ -261,7 +261,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Account Payable $</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.accountPayable}
                                     className={`w-full rounded border ${!formRef.current.accountPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.accountPayable = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -270,7 +270,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Liability</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.liability}
                                     className={`w-full rounded border ${!formRef.current.liability? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.liability = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -279,7 +279,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3">
                                 <label>Short Term Loans $</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.shortLoan}
                                     className={`w-full rounded border ${!formRef.current.shortLoan ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.shortLoan = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -290,7 +290,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Taxes payable $</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.taxesPayable}
                                     className={`w-full rounded border ${!formRef.current.taxesPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.taxesPayable = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -299,7 +299,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Account Expenses $</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.accountExpenses}
                                     className={`w-full rounded border ${!formRef.current.accountExpenses? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.accountExpenses = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -308,7 +308,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3">
                                 <label>Unearned Expense</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.unearnedExpense}
                                     className={`w-full rounded border ${!formRef.current.unearnedExpense ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.unearnedExpense = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -319,7 +319,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Notes Payable</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.notesPayable}
                                     className={`w-full rounded border ${!formRef.current.notesPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.notesPayable = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -328,7 +328,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Mortgage Payable $</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.mortgagePayable}
                                     className={`w-full rounded border ${!formRef.current.mortgagePayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.mortgagePayable = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -337,7 +337,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3">
                                 <label>Bonds Payable</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.bondsPayable}
                                     className={`w-full rounded border ${!formRef.current.bondsPayable ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.bondsPayable = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -348,7 +348,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3 mr-5">
                                 <label>Deferred Tax Liability</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.taxLiability}
                                     className={`w-full rounded border ${!formRef.current.taxLiability ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.taxLiability = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -370,7 +370,7 @@ const LiabilityForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordI
                             <div className="w-1/3">
                                 <label>Other Liability</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.otherliability}
                                     className={`w-full rounded border ${!formRef.current.otherliability ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.otherliability = e.currentTarget.value; subRefresh(Date.now()); }}

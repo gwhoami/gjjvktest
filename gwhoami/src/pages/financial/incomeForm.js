@@ -261,7 +261,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>Earned Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.earnedIncome}
                                     className={`w-full rounded border ${!formRef.current.earnedIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.earnedIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -270,7 +270,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>Profit Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.profitIncome}
                                     className={`w-full rounded border ${!formRef.current.profitIncome? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.profitIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -279,7 +279,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3">
                                 <label>Interest Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.interestIncome}
                                     className={`w-full rounded border ${!formRef.current.interestIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.interestIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -290,7 +290,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>Divided Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.dividedIncome}
                                     className={`w-full rounded border ${!formRef.current.dividedIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.dividedIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -299,7 +299,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>Rental Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.rentalIncome}
                                     className={`w-full rounded border ${!formRef.current.rentalIncome? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.rentalIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -308,7 +308,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3">
                                 <label>Capital Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.capitalIncome}
                                     className={`w-full rounded border ${!formRef.current.capitalIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.capitalIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -319,7 +319,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3 mr-5">
                                 <label>Royalty Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.royaltyIncome}
                                     className={`w-full rounded border ${!formRef.current.royaltyIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.royaltyIncome = e.currentTarget.value; subRefresh(Date.now()); }}
@@ -341,7 +341,7 @@ const IncomeForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                             <div className="w-1/3">
                                 <label>Other Income</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     value={formRef.current.otherIncome}
                                     className={`w-full rounded border ${!formRef.current.otherIncome ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.otherIncome = e.currentTarget.value; subRefresh(Date.now()); }}
