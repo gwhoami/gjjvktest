@@ -649,7 +649,13 @@ const MonthlyexpenseForm = React.memo(({ form, uiRefresh, alertRef, pageData, re
 
                         <div className="flex w-full justify-start items-center relative">
                             <div className="w-1/3 mr-5">
-                                
+                                <label>Total $</label>
+                                <input
+                                    type="number"
+                                    value={formRef.current.total}
+                                    className={`w-full rounded border ${!formRef.current.total ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.total = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
                             </div>
                             <div className="w-1/3 mr-5">
                                 <label>Month</label>

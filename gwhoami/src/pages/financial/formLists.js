@@ -119,6 +119,7 @@ export const formList = {
         monthFin:'',
         yearFin:'',
         personName: '',
+        total:'',
         eligibleRenewal: '',
         isRecentIdentity: true,
         identityComments: '',
