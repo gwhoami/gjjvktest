@@ -11,12 +11,12 @@ import ModalDialog from "../../component/modal/modalDialog";
 import { nanoid } from "nanoid";
 import { formList } from "./formLists";
 // import { UserContext } from "../../util/maincontext";
-import { InputRadio } from "../../component/forms";
+//import { InputRadio } from "../../component/forms";
 import MyLocalStorage from "../../util/mylocalStorage";
 
-const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordIndex, immuneAddedList }) => {
-    const [ui] = useState(-1);
-    const regRef = useRef({ ...Constants.user_empty_form });
+const ImmuneForm = React.memo(({ secondDose, form, uiRefresh, alertRef, pageData, recordIndex, immuneAddedList }) => {
+   // const [ui] = useState(-1);
+  //  const regRef = useRef({ ...Constants.user_empty_form });
     const formRef = useRef(form);
     const currentDom = useRef();
     // const { scrollRef } = useContext(UserContext);
@@ -212,15 +212,36 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
         
              var years = (otherDate.getFullYear() - birthDate.getFullYear());
         
-             if (otherDate.getMonth() < birthDate.getMonth() || 
-                 otherDate.getMonth() == birthDate.getMonth() && otherDate.getDate() < birthDate.getDate()) {
+             if ((otherDate.getMonth() < birthDate.getMonth()) || 
+                 (otherDate.getMonth() === birthDate.getMonth()) && 
+                 (otherDate.getDate() < birthDate.getDate())) {
                  years--;
              }
         
              return years;
          }
 
+        // const handleSeconddose = () => {
+         //   if (secondDose === 'no') {
+         //       alert ('No');
+         //       } 
+         //    else {                
+         //           if (secondDose === 'yes') 
+          //          alert ("Yes");
+          //      }
+          //  };
+            
 
+    
+    const [errorMessage, setErrorMessage] = useState('');
+    const errorClick  = () => {
+        setErrorMessage('Select if you have a second dose');
+    }
+    const removeError = () => {
+        setErrorMessage('');
+    }
+        
+        
 
     return (
         <>
@@ -401,33 +422,51 @@ const ImmuneForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     inputProps={inputProps}
                                     value={formRef.current.lastDose ? new Date(formRef.current.lastDose) : ''}
                                     onChange={date => { formRef.current.lastDose = date; subRefresh(Date.now()); }}
+                                    
                                 />
                              </div>
                             <div className="w-1/3 mr-5">
-                            <InputRadio 
-                                styleClass="flex flex-col mb-3" 
-                                formKey="secondDose" 
-                                formRef={regRef} 
-                                ui={ui} 
-                                label="Do you have 2nd Dose?"
-                                name="secondDose" 
-                                placeholder="Second Dose"
-                                values={['Yes', 'No']} 
-                                required="Do you have 2nd Dose? is required" 
-                            />    
+                                 <label>do you have second dose?</label>
+                                    <div className="flex ml-5">
+                                        <div class="mr-5">
+                                            <input
+                                            class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                                            checked={formRef.current.nextDose}
+                                            onChange={e => { formRef.current.nextDose = e.currentTarget.checked; subRefresh(Date.now()); }}
+                                        />
+                                    <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault1">
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="flexRadioDefault" id="flexRadioDefault2"
+                                        checked={!formRef.current.nextDose}
+                                        onChange={e => { formRef.current.nextDose = !e.currentTarget.checked; subRefresh(Date.now()); }}
+                                    />
+                                    <label class="form-check-label inline-block text-gray-800" for="flexRadioDefault2">
+                                        No
+                                    </label>
+                                </div>
+                            
+                        </div>
                             </div>
                             <div className="w-1/3 mr-5">
                             <label> Next Dose on</label>
-                            <Datetime
-                                    className={`w-full rounded ${!formRef.current.nextDose ? 'invalidyear' : ''}`}
-                                    placeholder="MM/DD/YYYY"
-                                    dateFormat="MM/DD/YYYY"
-                                    closeOnSelect={true}
-                                    timeFormat={false}
-                                    inputProps={inputProps}
-                                    value={formRef.current.nextDose ? new Date(formRef.current.nextDose) : ''}
-                                    onChange={date => { formRef.current.nextDose = date; subRefresh(Date.now()); }}
-                                />  
+                                <div onClick = {!formRef.current.nextDose ? errorClick : removeError}>
+                                    <Datetime
+                                        className={`w-full rounded  ${!formRef.current.nextDose ? ' pointer-events-none' : 'border-red-500'}`}
+                                        placeholder="MM/DD/YYYY"
+                                        dateFormat="MM/DD/YYYY"
+                                        closeOnSelect={true}
+                                        timeFormat={false}
+                                        inputProps={inputProps}
+                                        value={formRef.current.nextDose ? new Date(Date.now()) : ''}
+                                        onChange={date => { formRef.current.nextDose = date; subRefresh(Date.now()); }}
+
+                                    />  
+                                    {errorMessage && <div className="error"> {errorMessage} </div>}
+                                </div>
                             </div>
                         </div>
                         

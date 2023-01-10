@@ -59,6 +59,7 @@ export const formList = {
         immuneDose:true,
         age:'',
         isRecentImmune: true,
+        isNextdose: true,
         immuneComments: '',
         documents: [],
     },
