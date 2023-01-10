@@ -405,7 +405,18 @@ const AssetsForm = React.memo(({ form, uiRefresh, alertRef, pageData, recordInde
                                     className={`w-full rounded border ${!formRef.current.nameAssets ? 'border-red-500 err-input' : 'border-gray-400'}`}
                                     onChange={e => { formRef.current.nameAssets = e.currentTarget.value; subRefresh(Date.now()); }}
                                 />
-                            </div>  
+                            </div>                              
+                            <div className="w-1/3 mr-5">
+                                <label>Total $</label>
+                                <input
+                                    type="number"
+                                    value={formRef.current.total}
+                                    className={`w-full rounded border ${!formRef.current.total ? 'border-red-500 err-input' : 'border-gray-400'}`}
+                                    onChange={e => { formRef.current.total = e.currentTarget.value; subRefresh(Date.now()); }}
+                                />
+                            </div>
+                            <div className="w-1/3 mr-5">
+                           </div>
                             </div>                                                          
 
                         <div className="flex w-full justify-start items-center mt-3">

@@ -41,6 +41,7 @@ export const formList = {
             furnitureAssets: '',
             assetsyear:'',
             otherAssets:'',
+            total:'',
             country: '',
             state: '',
             zipcode: '',
